@@ -1,0 +1,35 @@
+{
+  "name": "peluangusaha",
+  "version": "1.0.0",
+  "description": "Aplikasi web menentukan peluang usaha yang tepat di kota Medan.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wendisaputra/PeluangUsaha.git"
+  },
+  "keywords": [
+    "express",
+    "javascript"
+  ],
+  "author": "ReyhanMahardhika, MasterLimboy, WendiSaputra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wendisaputra/PeluangUsaha/issues"
+  },
+  "homepage": "https://github.com/wendisaputra/PeluangUsaha#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "handlebars": "^4.7.6",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1",
+    "nanoid": "^3.1.10"
+  },
+  "devDependencies": {}
+}

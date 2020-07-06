@@ -1,0 +1,408 @@
+<div class="pac-card card rounded bg-white shadow ml-2" id="pac-card">
+    <div class="card-body">
+      
+      <h5 class="mb-2">Cari Rekomendasi Usaha</h5>
+      <div class="dropdown-divider"></div>
+      <form>
+        <div class="form-group">
+          <label for="text_lokasi"  style="font-size: 14px;">Cari Lokasi</label>
+          <input type="text" class="form-control" name="" id="text_lokasi" placeholder="">
+        </div>
+  
+        <div class="form-group mb-0">
+          <label for="modalForm" style="font-size: 14px;">Modal Yang Dimiliki</label>
+          <input type="number" min="0" class="form-control" id="text_modal_usaha" placeholder="" value="20000000">
+        </div>
+
+        <div id="alert_form_usaha"></div>
+        <button id="btn-reset-form" type="button" class="my-1 p-0 px-1 ml-auto btn btn-outline-warning btn-sm">Reset</button>
+        <button id="btn_cari_usaha" type="button" class="w-100 mt-4 btn btn-info shadow">Telusuri</button>
+      </form>
+    </div>
+  </div>
+  
+  <div class="container-fluid position vh-100 p-0" id="map-container">
+    <div id="map"></div>
+  </div>
+
+  <div id="hasil_analisis">
+
+  </div>
+
+  <div id="rekomendasi">
+    
+  </div>
+
+  
+  <script src="/bootstrap/js/popper.js"></script>
+  <script src="/bootstrap/js/jquery.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeNiSKscMn5k2Ymh0FKA6Ubmt7weTjVMU&libraries=places&callback=init"></script>
+
+  <script>
+    let map, infoWindow, geocoder, service, searchBox, circleRadius;
+    let markers = [], targetMarkers = [], pesaingMarkers = [];
+    
+    let card = document.getElementById('pac-card');
+    let txtLokasi = document.getElementById('text_lokasi');
+    let txtModalUsaha = document.getElementById('text_modal_usaha');
+    let btnResetForm = document.getElementById('btn-reset-form')
+    const medan = {lat: 3.597031, lng: 98.678513};
+
+    //Init Map
+    function init() {
+      btnResetForm.style.display = "none"
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 11,
+        center: medan,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        scaleControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
+        streetViewControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+      })
+
+      geocoder = new google.maps.Geocoder();
+      infoWindow = new google.maps.InfoWindow;
+      service = new google.maps.places.PlacesService(map);
+
+      map.controls[google.maps.ControlPosition.TOP_LEFT].push(card);
+      searchBox = new google.maps.places.SearchBox(txtLokasi);
+      
+      searchBox.addListener('places_changed', function() {
+        let places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+          return;
+        }
+
+        clearMarkers()
+
+        // For each place, get the icon, name and location.
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function(place) {
+          if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+          }
+
+          const icon = {
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(25, 25)
+          };
+
+          // Create a marker for each place.
+          markers.push(new google.maps.Marker({
+            map: map,
+            icon: icon,
+            title: place.name,
+            position: place.geometry.location,
+          }));
+
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        map.fitBounds(bounds);
+      });
+
+      map.addListener('click', function(e) {
+        addMarker(e.latLng);
+      });
+
+    }
+
+    txtLokasi.addEventListener('input', (e) => {
+      if(txtLokasi.value.length > 0 || txtModalUsaha.value.length > 0) {
+        btnResetForm.style.display = 'block'
+        return
+      }
+      btnResetForm.style.display = 'none'
+    })
+
+    txtModalUsaha.addEventListener('input', (e) => {
+      if(txtLokasi.value.length > 0 || txtModalUsaha.value.length > 0) {
+        btnResetForm.style.display = 'block'
+        return
+      }
+      btnResetForm.style.display = 'none'
+    })
+
+    btnResetForm.addEventListener('click', (e) => {
+      txtLokasi.value = null
+      txtModalUsaha.value = null
+      clearMarkers()
+      document.getElementById('alert_form_usaha').innerHTML = ''
+      circleRadius.setMap(null)
+      btnResetForm.style.display = 'none'
+    })
+
+    function addMarker(pos) {
+      clearMarkers()
+      let marker = new google.maps.Marker({
+        map: map,
+        zoom: 1,
+        position: pos,
+      })
+      markers.push(marker)
+      
+      geocoder.geocode({ location: pos }, function(results, status) {
+        if (status === "OK") {
+
+          console.log(results)
+          if (results[0]) {
+            txtLokasi.value = results[0].formatted_address
+            btnResetForm.style.display = 'block'
+          } else {
+            window.alert("Data lokasi tidak ditemukan.");
+          }
+        } else {
+          window.alert("Geocoder failed due to: " + status);
+        }
+      });
+
+      if(circleRadius != undefined) {
+        circleRadius.setMap(null)
+      }
+      
+      circleRadius = new google.maps.Circle({
+        strokeColor: "#858585",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0,
+        map: map,
+        center: pos,
+        radius:500
+      });
+      
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(function() {
+        marker.setAnimation(null)
+      }, 2000)
+    }
+      
+    function clearMarkers() {
+      // Clear out the old markers.
+      markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = []
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        let pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        // infoWindow.setPosition(pos);
+        // infoWindow.setContent('Location found.');
+        // addMarker(pos)
+        // infoWindow.open(map);
+      
+        // map.setCenter(pos);
+      }, function() {
+        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infoWindow, map.getCenter());
+    }
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Your browser doesn\'t support geolocation.');
+      infoWindow.open(map);
+    }
+    let info =[]
+    function addTargetMarkers(pos, title, usaha) {
+      let marker = new google.maps.Marker({
+        map: map,
+        zoom: 1,
+        position: pos,
+        title: title
+      })
+      targetMarkers.push(marker)
+
+      let distance = getDistance(usaha, pos)
+
+      let window = new google.maps.InfoWindow({  content: `${title} : ${distance}` });
+      window.open(map, marker);
+      info.push(window)
+      
+    }
+    var rad = function(x) {
+      return x * Math.PI / 180;
+    };
+
+    var getDistance = function(p1, p2) {
+      var R = 6378137; // Earth’s mean radius in meter
+      var dLat = rad(p2.lat() - p1.lat());
+      var dLong = rad(p2.lng() - p1.lng());
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
+        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c;
+      return d; // returns the distance in meter
+    };
+    function cariRekomendasiUsaha(pos) {
+      // Ambil data lokasi
+      // Hitung algoritma weight product
+      var list_target_pasar = ["Perguruan Tinggi"]
+
+      list_target_pasar.forEach(target => {
+        const area = new google.maps.LatLng(pos.lat(), pos.lng());
+        console.log(pos.lat() + ": " + pos.lng())
+        service.nearbySearch({location : area, radius : 500, name: `${target}`}, (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            console.log(target)
+            console.log(results)
+            results.forEach(hasil => {
+              addTargetMarkers(hasil.geometry.location, hasil.name, pos)
+            })
+          }
+        });
+      })
+      renderHasilRekomendasi(pos)
+    }
+
+    function renderHasilRekomendasi(pos) {
+      //const url = 'localhost:3000/api'.replace(/^http:\/\//i, 'https://');
+      // const position = {lat: lat, lng: lng}
+
+      fetch('http://localhost:3000/api').then(response => {
+        return response.json()
+      }).then(data => {
+        let analisisLokasiHtml = ''
+        analisisLokasiHtml += 
+        `
+        <div class="container mt-4">
+          <div class="row">
+            <div class="col-12">
+
+              <div class="jumbotron">
+                <h1 class="display-4">Hasil Analisis Lokasi</h1>
+                <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+                <hr class="my-4">
+                <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+                <p class="lead">
+                  <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        `
+        $('#hasil_analisis').html(analisisLokasiHtml)
+        let rekomendasiHtml = ''
+        if(data.usaha.length > 0) {
+          rekomendasiHtml = 
+            `
+              <div class="container mt-4">
+                <div class="row">
+                  <div class="col-12 mb-2">
+                    <h4>Daftar Rekomendasi Usaha</h4>
+                    <div class="alert alert-success" role="alert">
+                      Ditemukan ${data.usaha.length} jenis usaha yang cocok di lokasi anda.
+                    </div>
+                  </div>
+            `
+          data.usaha.forEach(usaha => {
+            rekomendasiHtml +=
+            `
+              <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card card-border-bottom shadow">
+                  <a href="/detail_usaha/${usaha.id_usaha}?lat=${pos.lat}&lng=${pos.lng}&idw=22918">
+                    <img src="img/img-3.jpg" alt="" class="card-img-top">
+                  </a>
+                  <div class="card-body">
+                    <h5 class="card-title"><a href="/detail_usaha/${usaha.id_usaha}"><strong>${usaha.nama_usaha}</strong></a></h5>
+                    <p class="card-text">Modal &emsp; : Rp.${usaha.modal}<br><small>Kategori &emsp; : ${usaha.jenis_usaha}</small></p>
+                  </div>
+                </div>
+              </div>
+            `
+          });
+
+          rekomendasiHtml += `
+              </div>
+            </div>
+          `
+          $('#rekomendasi').html(rekomendasiHtml)
+        } else {
+          rekomendasiHtml += 
+          `
+            <div class="container mt-4">
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <h4>Rekomendasi Usaha</h4>
+                  <div class="alert alert-success" role="alert">
+                    Tidak ditemukan peluang usaha yang cocok di lokasi anda.
+                  </div>
+                </div>
+              </div>
+            </div>
+          `
+          $('#rekomendasi').html(rekomendasiHtml)
+        }
+        // Scroll to rekomendasi element
+        $([document.documentElement, document.body]).animate({
+          scrollTop: $("#rekomendasi").offset().top - 80
+        }, 1000);
+      })
+    }
+    
+    $(document).ready(function(){
+
+      $('#btn_cari_usaha').click(() => {
+        
+        if(!$.trim($('#text_lokasi').val()) || !$.trim($('#text_modal_usaha').val())) {
+          let message = 'Lokasi dan modal usaha tidak boleh kosong.'
+          const alertHtml = 
+          `
+          <div class="alert mt-2 alert-warning alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true" class="p-0">&times;</span>
+            </button>
+          </div>
+          `
+          $('#alert_form_usaha').html(alertHtml)
+
+        } else {
+          console.log("length", markers.length)
+          const lat = markers[0].getPosition().lat()
+          const lng = markers[0].getPosition().lng()
+          cariRekomendasiUsaha(markers[0].getPosition())
+        }
+      })
+
+      window.onscroll = () => {
+        let currentScrollPos = window.pageYOffset
+        if (currentScrollPos > 100) {
+          $('#nav-scroll').removeClass('container-fluid')
+          $('#nav-scroll').addClass('container')
+          $('#navigasi').addClass('bg-white')
+
+        } else {
+          $('#navigasi').removeClass('bg-white') 
+          $('#nav-scroll').removeClass('container')
+          $('#nav-scroll').addClass('container-fluid')
+        }
+      }
+    });
+
+  </script>

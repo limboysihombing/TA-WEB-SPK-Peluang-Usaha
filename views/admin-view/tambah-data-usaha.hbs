@@ -1,0 +1,83 @@
+<div class="container mb-4">
+  <div class="row">
+  
+    <div class="col-12">
+      <div class="card rounded-0 shadow-sm">
+        <div class="card-body">
+        
+          <h4 class="mb-3">Tambah Data Usaha</h4>
+
+
+          <form action="/admin/form_tambah_usaha" class="needs-validation" method="POST" novalidate>
+            <div class="form-group">
+              <label for="nama_usaha">Nama Usaha</label>
+              <input type="text" name="nama_usaha" class="form-control" id="nama_usaha" required>
+              <div class="invalid-feedback">⚠ Nama usaha tidak boleh kosong.</div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="modal_usaha">Modal</label>
+                <input type="number" name="modal_usaha" class="form-control" id="modal_usaha" placeholder="Rp. " required>
+                <div class="invalid-feedback">⚠ Modal tidak boleh kosong.</div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="jenis_usaha">Jenis Usaha</label>
+                <input type="text" name="jenis_usaha" class="form-control" id="jenis_usaha" placeholder="Kuliner, jasa, dll" required>
+                <div class="invalid-feedback">⚠ Jenis Usaha tidak boleh kosong.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="gambar_usaha">Gambar</label>
+              <input type="file" name="gambar_usaha" class="form-control-file" id="gambar_usaha">
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="target_pasar">Target Pasar <small> - Pisahkan dengan tanda koma (,)</small></label>
+                <input type="text" name="target_pasar" class="form-control" id="target_pasar" placeholder="" required>
+                <div class="invalid-feedback">⚠ Target pasar tidak boleh kosong.</div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="kepadatan_penduduk">Kepadatan Penduduk Minimum</label>
+                <input type="text" name="kepadatan_penduduk" class="form-control" id="kepadatan_penduduk" required>
+                <div class="invalid-feedback">⚠ Kepadatan penduduk tidak boleh kosong.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="deskripsi_usaha">Deskripsi Usaha</label>
+              <textarea name="deskripsi_usaha" class="form-control" id="deskripsi_usaha" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="bahan_baku">Bahan Baku</label>
+              <textarea name="bahan_baku" class="form-control" id="bahan_baku" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Simpan Data</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+  (function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+        alert(txtPass.text)
+      });
+    }, false);
+  })();
+</script>

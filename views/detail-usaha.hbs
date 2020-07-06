@@ -1,0 +1,109 @@
+{{#if message}}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="alert alert-success">{{message}}</div>
+      </div>
+    </div>
+  </div>
+{{/if}}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4 shadow">
+        <img src="../img/img-3.jpg" height="300px" alt="" class="card-img-top">
+        <div class="card-body position-relative">
+          <a href="/simpan_usaha?idu={{usaha.id_usaha}}&idw=1245" type="button" id="btn-save" data-toggle="tooltip" data-placement="bottom" title="Simpan" class="btn btn-sm btn-info shadow"><i class="fas fa-save"></i></a>
+          
+          <h5 class="card-title"><strong>Detail Usaha {{usaha.nama_usaha}}</strong></h5>
+          <h6>Modal Usaha: Rp.{{usaha.modal}}</h6>
+
+          <h6>Deskripsi Usaha</h6>
+          <p>{{usaha.deskripsi}}</p>
+          
+          <div class="row">
+            <div class="col-12">
+              <h6><strong>Analisis Lokasi</strong></h6>
+              <div class="jumbotron" id="target-pesaing">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <h6 class="mb-2">Target Pasar</h6>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="card-border-left shadow mb-2">
+                          <p class="card-title">Hari sudah malam</p>
+                        </div>
+                        <button type="button" class="mt-2 shadow btn btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <h6 class="mb-2">Daftar Pesaing</h6>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="card-border-left shadow mb-2">
+                          <p class="card-title">Hari sudah malam</p>
+                        </div>
+                        <button type="button" class="mt-2 btn shadow btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+              
+            </div>
+          </div>
+
+          
+          <!-- Bahan Baku -->
+          <h6 class="mt-4 mb-2"><strong>Bahan baku</strong></h6>
+
+          <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">First</th>
+                  <th scope="col">Last</th>
+                  <th scope="col">Handle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>Mark</td>
+                  <td>Otto</td>
+                  <td>@mdo</td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td>Jacob</td>
+                  <td>Thornton</td>
+                  <td>@fat</td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
+              </tbody>
+            </table>
+
+          <strong>Analisis Keuntungan</strong>
+          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque necessitatibus maxime, voluptate officia velit sit ratione minus voluptates saepe error inventore tempora quo vel, eligendi, ipsam similique aperiam totam eius.</p>
+          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque necessitatibus maxime, voluptate officia velit sit ratione minus voluptates saepe error inventore tempora quo vel, eligendi, ipsam similique aperiam totam eius.</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/bootstrap/js/popper.js"></script>
+<script src="/bootstrap/js/jquery.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- content -->
+

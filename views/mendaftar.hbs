@@ -1,0 +1,90 @@
+<div class="container">
+
+  <!-- Outer Row -->
+  <div class="row justify-content-center">
+
+    <div class="col-xl-12 col-lg-12 col-md-12">
+
+      <div class="card o-hidden border-0 shadow-lg my-4">
+        <div class="card-body p-0">
+          
+          <div class="row">
+            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+            <div class="col-lg-6">
+              <div class="p-4">
+                <div class="text-center">
+                  <h1 class="h4 text-gray-900 mb-4">Buat Akun Baru</h1>
+                </div>
+                {{#if msg}}
+                <div class="alert alert-warning">
+                  {{msg}}
+                </div>
+                {{/if}}
+                <form action="/mendaftar" class="needs-validation" method="POST"  novalidate>
+                  <div class="form-group">
+                    <label for="inputNama">Nama</label>
+                    <input type="text" name="nama_pengguna" class="form-control" id="inputNama" required>
+                    <div class="invalid-feedback">
+                      Nama tidak boleh kosong
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputEmail">Email</label>
+                    <input type="email" name="email" class="form-control" id="inputEmail" required>
+                    <div class="invalid-feedback">
+                      Email tidak boleh kosong dan harus mengandung @domain
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputPassword">Kata Sandi</label>
+                    <input type="password" name="password" class="form-control" id="inputPassword" required>
+                    <div class="invalid-feedback">
+                      Kata Sandi tidak boleh kosong
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputPassword">Ulangi sandi</label>
+                    <input type="password" name="password2" class="form-control" id="inputPassword" required>
+                    <div class="invalid-feedback">
+                      Kata Sandi tidak boleh kosong
+                    </div>
+                  </div>
+
+                  <button type="submit" class="w-100 btn btn-primary">Daftar</button>
+                </form>
+                <div class="text-center">
+                  <p class="small mt-2">Sudah punya akun?&emsp;<a class="text-primary" href="/masuk">Masuk</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+      alert(txtPass.text)
+    });
+  }, false);
+})();
+</script>

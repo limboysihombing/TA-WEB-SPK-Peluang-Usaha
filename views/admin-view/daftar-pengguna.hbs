@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow border-bottom-info">
+        <div class="card-header">
+          <h6 class="m-0 font-weight-bold">Daftar Pengguna</h6>
+        </div>
+        <div class="card-body">
+          {{#if msg}}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{msg}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {{/if}}
+
+          <div class="table-reponsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Gambar</th>
+                  <th>Nama Pengguna</th>
+                  <th>email</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each daftarPengguna}}
+                <tr>
+                  <td>{{this.gambar}}</td>
+                  <td>{{this.nama_pengguna}}</td>
+                  <td>{{this.email}}</td>
+                  <td>
+                    <a href="/admin/detail_usaha/{{this.id_usaha}}" class="btn btn-sm rounded-0 btn-primary">Detail</a>
+                    <a href="#" class="btn btn-sm rounded-0 btn-warning">Edit</a>
+                    <a href="/admin/hapus_usaha/{{this.id_usaha}}" class="btn btn-sm rounded-0 btn-danger">Hapus</a>
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

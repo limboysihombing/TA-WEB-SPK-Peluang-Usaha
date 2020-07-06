@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  {{!-- <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"> --}}
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css"> 
+  <link rel="stylesheet" href="/custom-style/style.css">
+  <title>{{title}}</title>
+ 
+</head>
+<body>
+
+  {{!-- Navigasi --}}
+  <nav class="navbar shadow sticky-top navbar-expand-lg navbar-light bg-white">
+    <div class="container">
+      <a class="title navbar-brand" href="/" style="font-display: ">SPK Peluang Usaha</a>                
+      <div class="form-inline my-2 my-lg-2">
+        {{#if akun}}
+          <div class="dropdown">
+            <div class="dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" style="cursor: pointer;">
+              <span class="mr-2 d-none d-lg-inline text-gray-700 small">Halo, {{akun.nama_pengguna}}</span>
+              <img style="background: #fff;" width="30" src="/img/businessman_100px.png" class="rounded-circle img-profile" alt="Cinque Terre">
+            </div>
+
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+              <a class="dropdown-item" href="#">
+                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                Profile
+              </a>
+              <a class="dropdown-item" href="/usaha_tersimpan">
+              <i class="fas mr-2 text-gray-400"><img src="/img/business_black_52px.png" width="13px" alt=""></i>
+                Usaha Tersimpan
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                Logout
+              </a>
+            </div>
+          </div>
+        {{else}}
+            <a href="/masuk" class="btn btn-sm btn-info shadow mx-2 my-2 my-sm-0">MASUK</a>
+            <a href="/mendaftar" class="btn btn-sm btn-primary shadow my-2 my-sm-0">DAFTAR</a>
+        {{/if}}
+      </div>
+    </div>
+  </nav>
+
+  {{{body}}}
+
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Yakin ingin Keluar?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Pilih "Keluar" jika anda benar ingin meninggalkan halaman ini.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+          <a class="btn btn-primary" href="/logout">Keluar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+ {{!-- Script --}}
+  <script src="/bootstrap/js/popper.js"></script>
+  <script src="/bootstrap/js/jquery.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+  <script>
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+</body>
+</html>

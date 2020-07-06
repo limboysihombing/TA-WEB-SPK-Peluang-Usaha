@@ -1,0 +1,65 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow border-bottom-info">
+        <div class="card-header d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold">Daftar Wilayah Kota Medan</h6>
+          <div>
+            {{!-- Jumlah Data: 20 &emsp13; --}}
+            <a href="/admin/form_tambah_wilayah" class="btn btn-info btn-sm btn-icon-split">
+              <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+              </span>
+              <span class="text">Tambah Data</span>
+            </a>
+          </div>
+
+        </div>
+        <div class="card-body">
+
+          {{#if msg}}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{msg}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {{/if}}
+
+          <div class="table-reponsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">No.</th>
+                  <th>Nama Wilayah</th>
+                  <th>Kepadatan Penduduk</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each daftarWilayah}}
+                <tr>
+                  <td>{{this.id_wilayah}}</td>
+                  <td>{{this.nama_wilayah}}</td>
+                  <td>{{this.kepadatan_penduduk}}</td>
+                  <td>
+
+                    <a href="/admin/hapus_wilayah/{{this.id_wilayah}}" class="btn btn-sm btn-danger btn-icon-split">
+                      <span class="icon text-white-50">
+                        <i class="fas fa-trash"></i>
+                      </span>
+                      <span class="text"> Hapus</span>
+                    </a>
+                  
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

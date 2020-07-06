@@ -1,0 +1,47 @@
+<!-- content -->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4 shadow">
+        
+        <div class="card-body">
+          <h5 class="card-title">Usaha Tersimpan</h5>
+          {{#if msg}}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{msg}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true" class="p-0">&times;</span>
+              </button>
+            </div>
+          {{/if}}
+          {{#each daftarUsaha}}
+            <div class="card border-0 shadow mb-4">
+              <div class="row">
+                <div class="col-md-3">
+                    <img src="/img/img-3.jpg" class="img-fluid rounded mx-auto d-block" alt="Gambar usaha">
+                </div>
+                <div class="col-md-9">
+                  <div class="card-body position-relative">
+                    <h5 class="m-0">{{this.nama_usaha}}</h5>
+                    <small>Modal Rp. {{this.modal}}</small>
+                    <p class="card-text" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">
+                      {{this.deskripsi_usaha}}
+                    </p>
+                    <a href="/detail_usaha_tersimpan/{{this.id_usaha_tersimpan}}" class="btn btn-info btn-sm"><i class="fas fa-list"></i> Lihat Detail</a>
+                    <a id="btn_hapus_usaha_tersimpan" class="btn btn-danger btn-sm" href="/hapus_usaha_tersimpan/{{this.id_usaha_tersimpan}}"><i class="fas fa-trash"></i> Hapus Usaha</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{else}}
+            <div class="alert alert-warning fade show" role="alert">
+              Tidak ada data tersimpan.
+            </div>
+          {{/each}}
+
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
