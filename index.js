@@ -168,6 +168,7 @@ app.get('/logout', (req, res) => {
 })
 
 // api to mobile 
+app.use('/api/usaha', require('./routes/api/usaha'))
 app.use('/api', require('./routes/api/api'))
 
 app.listen(3000, ()=> {

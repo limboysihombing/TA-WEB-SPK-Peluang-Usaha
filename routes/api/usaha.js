@@ -4,15 +4,21 @@ var nanoid = require('nanoid')
 const cors = require('cors')
 const usahaFunction = require('../../config/usaha_function.js')
 
-router.use(cors({
-  origin:'http://127.0.0.1:5500'
-}))
+// router.use(cors)
 //get all
+// router.get('/', (req, res) => {
+//   console.log('sdfkj')
+// })
+// http://localhost:3000/api/usaha?modal=10000
+
 router.get('/', (req, res) =>{
   usahaFunction.ambilSemuaDataUsaha(result => {
     res.json({usaha: result})
   })
 })
 
-// router.get('/usaha', require('./usaha_api'))
+router.get('/*', (req, res) => {
+  res.json({msg: 'Halaman tidak ditemukan.'})
+})
+
 module.exports = router

@@ -37,7 +37,7 @@
   <script src="/bootstrap/js/popper.js"></script>
   <script src="/bootstrap/js/jquery.js"></script>
   <script src="/bootstrap/js/bootstrap.min.js"></script>
-
+  
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeNiSKscMn5k2Ymh0FKA6Ubmt7weTjVMU&libraries=places&callback=init"></script>
 
   <script>
@@ -157,7 +157,6 @@
       geocoder.geocode({ location: pos }, function(results, status) {
         if (status === "OK") {
 
-          console.log(results)
           if (results[0]) {
             txtLokasi.value = results[0].formatted_address
             btnResetForm.style.display = 'block'
@@ -198,6 +197,7 @@
       markers = []
     }
 
+    // gunakan GPS
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         let pos = {
@@ -218,6 +218,7 @@
       // Browser doesn't support Geolocation
       handleLocationError(false, infoWindow, map.getCenter());
     }
+
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {
       infoWindow.setPosition(pos);
       infoWindow.setContent(browserHasGeolocation ?
@@ -225,7 +226,9 @@
                             'Error: Your browser doesn\'t support geolocation.');
       infoWindow.open(map);
     }
+
     let info =[]
+
     function addTargetMarkers(pos, title, usaha) {
       let marker = new google.maps.Marker({
         map: map,
@@ -240,9 +243,9 @@
       let window = new google.maps.InfoWindow({  content: `${title} : ${distance}` });
       window.open(map, marker);
       info.push(window)
-      
     }
-    var rad = function(x) {
+    
+    let rad = function(x) {
       return x * Math.PI / 180;
     };
 
@@ -257,34 +260,390 @@
       var d = R * c;
       return d; // returns the distance in meter
     };
-    function cariRekomendasiUsaha(pos) {
-      // Ambil data lokasi
-      // Hitung algoritma weight product
-      var list_target_pasar = ["Perguruan Tinggi"]
 
-      list_target_pasar.forEach(target => {
-        const area = new google.maps.LatLng(pos.lat(), pos.lng());
-        console.log(pos.lat() + ": " + pos.lng())
-        service.nearbySearch({location : area, radius : 500, name: `${target}`}, (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
-            console.log(target)
-            console.log(results)
-            results.forEach(hasil => {
-              addTargetMarkers(hasil.geometry.location, hasil.name, pos)
-            })
-          }
-        });
-      })
-      renderHasilRekomendasi(pos)
+    let tidakPadat = (x) => {
+      if(x <= 3233) { return 1; }
+      else if(3233 <= x && x <= 8288.75) { 
+        return (8288.75 - x) / (8288.75 - 3233);
+      }
+      else { return 0; }
     }
 
-    function renderHasilRekomendasi(pos) {
+    let kurangPadat = (x) => {
+      if (x <= 3233 || x>=8288.75) { return 0; }
+      else if (3233 <= x && x <= 8288.75) {
+        return (x-3233) / (8288.75 - 3233);
+      }
+      else { return (13344.5-x) / (13344.5 - 3233); }
+    }
+
+    function cukupPadat(x) {
+      if (x <= 8288.75 || x >= 18400.25) { return 0; }
+      else if (8288.75 <= x && x <= 13344.5){
+        return  (x-8288.75) / (13344.5-8288.75); 
+      }
+      else {
+        return (18400.25-x)/(18400.25-8288.75);
+      }
+    }
+
+    function cekPadat(x) {
+      if (x <= 13344.5 || x >= 23456) { return 0; }
+      else if (13344.5 <= x && x <= 18400.25){
+        return (x-13344.5) / (18400.25 - 13344.5);
+      }
+      else {
+        return (23456-x)/(23456-13344.5);
+      } 
+    }
+
+    function sangatPadat(x) {
+      if (x <= 18400.25) { return 0 }
+      else if (18400.25 <= x && x <= 23456) {
+        return (x-18400.25) / (23456 - 18400.25);
+      }
+      else {
+        return 1;
+      } 
+    }
+
+    // Cari pesaing / usaha sejenis
+    function cariPesaing(pos, usaha) {
+      return new Promise((resolve, reject) => {
+        service.nearbySearch({location : pos, radius : 500, language: 'id', name: `${usaha}`}, (results, status) => {
+          
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            let pesaing = []
+            results.forEach(hasil => {
+              if(getDistance(pos, hasil.geometry.location) <= 500){
+                
+                const jarak = getDistance(pos, hasil.geometry.location)
+                hasil['jarak'] = jarak
+                pesaing.push(hasil)
+              }
+            })
+            resolve(pesaing)
+          } else if(status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            let pesaing = []
+            resolve(pesaing)
+          } else {
+            let pesaing = []
+            resolve(pesaing)
+          }
+
+        })
+      })
+    }
+    
+    function cariTargetPasar(pos, target) {
+
+      return new Promise((resolve, reject) => {
+        service.nearbySearch({location : pos, radius : 500, language: 'id', name: `${target}`}, (results, status) => {
+          
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            let targetPasar = []
+            let numTerdekat = 501
+            results.forEach(hasil => {
+              if(getDistance(pos, hasil.geometry.location) <= 500){
+                const jarak = getDistance(pos, hasil.geometry.location)
+                hasil['jarak'] = jarak
+                targetPasar.push(hasil)
+              }
+            })
+            resolve(targetPasar)
+            
+          }else if(status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            let targetPasar = []
+            resolve(targetPasar)
+            
+          } else {
+            let targetPasar = []
+            resolve(targetPasar)
+          }
+
+        });
+      })
+    }
+    
+    const ambilDataUsaha = () => {
+      return new Promise((resolve, reject) => {
+        fetch(`http://localhost:3000/api/usaha`).then(response => {
+          return response.json()
+        }).then(data => {
+          resolve(data.usaha)
+        })
+      })
+    }
+
+    //async function ambilRekomendasiTargetPasar(pos, target) {
+    //  return await cariTargetPasar(pos, target)
+    //}
+    
+    function compare( a, b ) {
+      if ( a.jarak < b.jarak ){
+        return -1;
+      }
+      if ( a.jarak > b.jarak ){
+        return 1;
+      }
+      return 0;
+    }
+
+
+    async function cariRekomendasiUsaha(pos) {
+      // Ambil data usaha
+      let modalUsaha = txtModalUsaha.value
+      let tKepadatan = 16181, tpadat, kpadat, cpadat, padat, spadat
+      let listTargetPasar = []
+      let dataTargetPasar = {}
+      let dataPesaing = {}
+      tingkatKepadatanLokasi = "";
+      
+      let usaha = await ambilDataUsaha()
+      console.log('Daftar Usaha Dari Database')
+      console.log(usaha)
+      
+      
+      //gabungkan target pasar dari  masing masing usaha menjadi 1 variabel
+      usaha.forEach(usaha => {
+        let targetPasar = usaha.target_pasar.toLowerCase().split(',')
+        for(let i = 0; i < targetPasar.length; i++) {
+          // Lakukan pengecekan apakah target pasar sudah ada
+          if(listTargetPasar.indexOf(targetPasar[i].trim()) > -1) {
+            return
+          } else {
+            listTargetPasar.push(targetPasar[i].trim())
+          }
+        }
+      })
+      console.log('List Target Pasar')
+      console.log(listTargetPasar)
+      
+      // Lakukan pencarian semua target pasar yang ada di lokasi
+      for(let i = 0; i < listTargetPasar.length; i++) {
+        const hasil = await cariTargetPasar(pos, listTargetPasar[i])
+        dataTargetPasar[`${listTargetPasar[i]}`] = hasil
+      }
+      console.log('Data Target Pasar')
+      console.log(dataTargetPasar)
+
+      for(let i = 0; i < usaha.length; i++) {
+        const pesaing = await cariPesaing(pos, usaha[i].nama_usaha)
+        dataPesaing[`${usaha[i].nama_usaha}`] = pesaing
+      }
+      console.log('Data Pesaing')
+      console.log(dataPesaing)
+      // Masuk Algoritma --------------
+
+
+      console.log('Nilai kepadatan pada lokasi: ')
+      tpadat = tidakPadat(tKepadatan).toFixed(2)
+      tingkatKepadatanLokasi = "tidak Padat"
+      console.log(`Tidak padat\t: ${tpadat}`)
+
+      kpadat = kurangPadat(tKepadatan).toFixed(2)
+      if (kpadat >= tpadat) {
+        tingkatKepadatanLokasi = "kurang padat"
+      }
+      console.log(`Kurang Padat\t: ${tpadat}`)
+
+      cpadat = cukupPadat(tKepadatan).toFixed(2)
+      if (cpadat >= kpadat) {
+        tingkatKepadatanLokasi = "cuku padat"
+      }
+      console.log(`Cukup padat\t: ${cpadat}`)
+
+      padat = cekPadat(tKepadatan).toFixed(2)
+      if (padat >= cpadat) {
+        tingkatKepadatanLokasi = "padat"
+      }
+      console.log(`Padat\t: ${padat}`)
+
+      spadat = sangatPadat(tKepadatan).toFixed(2)
+      if (spadat >= padat) {
+        tingkatKepadatanLokasi = "sangat padat"
+      }
+      console.log(`Sangat Padat\t: ${spadat}`)
+      console.log()
+      console.log(`Maka lokasi = ${tingkatKepadatanLokasi}`)
+
+      // Ini adalah proses pembentukan tabel 3114 Nilai Preferensi Kriteria
+      console.log("\nTabel nilai Preferensi Kriteria :");
+      console.log("\nAlternatif\tC1\tC2\tC3\tC4\tC5");
+
+      let preferensi = []
+      
+
+      usaha.forEach((item, index) => {
+        
+        let jlhTargetPasar = 0
+        
+        let itemPreferensi = {}
+
+        for(let j = 0; j <= 5; j++) {
+          
+
+          if(j == 0) {
+            itemPreferensi['Alternatif'] = 'U' + (index + 1)
+            itemPreferensi['namaUsaha'] = item.nama_usaha
+
+          }
+          else if(j == 1) {
+            // Nilai Modal Usaha (1/0)
+            if(item.modal <= modalUsaha) {
+              itemPreferensi['modal'] = 1
+            } else {
+              itemPreferensi['modal'] = 0
+            }
+          }
+          else if(j == 2) {
+            let jlh = 0
+            
+            const targetPasar = item.target_pasar.toLowerCase().split(',')
+            targetPasar.forEach(target => {
+              //if(target.trim() in dataTargetPasar) {
+              if(dataTargetPasar[`${target}`.trim()].length > 0) {
+                jlh += dataTargetPasar[`${target}`.trim()].length
+              }
+            })
+            itemPreferensi['jlhTargetPasar'] = jlh
+          }
+          else if(j == 3) { 
+            let jarak = 0
+            const targetPasar = item.target_pasar.toLowerCase().split(',')
+            targetPasar.forEach(target => {
+              //if(target.trim() in dataTargetPasar) {
+              if(dataTargetPasar[`${target}`.trim()].length > 0) {
+                dataTargetPasar[`${target}`.trim()].sort(compare)
+                jarak = dataTargetPasar[`${target}`.trim()][0].jarak
+              }
+            })
+            itemPreferensi['jarakPasarTerdekat'] = jarak
+          }
+          else if(j == 4) {
+            let preferensiKepadatan = ["tidakpadat", "kurang padat", "cukup padat", "padat", "sangat padat"]
+            if(item.kepadatan_penduduk == '1') {
+              preferensiKepadatan.forEach((kepadatan, index) => {
+                if(tingkatKepadatanLokasi == kepadatan) {
+                  itemPreferensi['kepadatanPendudukDiperlukan'] = (index + 1)
+                }
+              })
+
+            } else {
+              for(let a = preferensiKepadatan.length -1; a > 0; a--) {
+                if(tingkatKepadatanLokasi == preferensiKepadatan[a]){
+                  itemPreferensi['kepadatanPendudukDiperlukan'] = (a-1)
+                }
+              }
+            }
+          }
+          else if(j == 5) {
+            let jlh = 1;
+            
+            const {nama_usaha} = item
+            jlh += dataPesaing[`${nama_usaha}`].length
+            itemPreferensi['jumlahPesaing'] = (jlh)
+          }
+        }
+
+        preferensi.push(itemPreferensi)
+        itemPreferensi = {}
+        
+
+      })
+      console.log(preferensi)
+
+      // Perhitungan Algoritma
+      //Pemberian nilai bobot kriteria
+      let w1 = 5, w2 = 4, w3 = 3, w4 = 5, w5 = 2;
+      console.log("\nBobot Kriteria W1(Modal) = " + w1); //kriteria Modal
+      console.log("W2(Modal) = " + w2);//kriteria Jumlah Target Pasar
+      console.log("W3(Jarak Terget Pasar) = " + w3);//kriteria Jarak Target Pasar
+      console.log("W4(Kepadatan Penduduk) = " + w4);//kriteria Kepadatan Penduduk
+      console.log("W5(Jumlah Peaing) = " + w5);//kriteria Jumlah Pesaing
+
+      // Tahap normalisasi (perbaikan bobot)
+      console.log('Hasil perbaikan bobot:')
+      let W1 = parseFloat(w1 / (w1 + w2 + w3 + w4 + w5)).toFixed(3)
+      let W2 = parseFloat(w2 / (w1 + w2 + w3 + w4 + w5)).toFixed(3)
+      let W3 = parseFloat(w3 / (w1 + w2 + w3 + w4 + w5)).toFixed(3)
+      let W4 = parseFloat(w4 / (w1 + w2 + w3 + w4 + w5)).toFixed(3)
+      let W5 = parseFloat(w5 / (w1 + w2 + w3 + w4 + w5)).toFixed(3)
+
+      console.log("W1 = " + W1);
+      console.log("W2 = " + W2);
+      console.log("W3 = " + W3);
+      console.log("W4 = " + W4);
+      console.log("W5 = " + W5);
+
+      //Tahap Menentukan Preferensi Alternatif atau Nilai Vektor (S)
+      console.log("\nHasil Perhitungan nilai Vektor S");
+
+      let S = []
+      let totalNilaiS = 0.0
+      let STemp = 0.0
+      for(let i = 0; i < usaha.length; i++) {
+        // Menggunakan rumus mencari nilai Vektor (S)
+        if(preferensi[i].jlhTargetPasar == 0) {
+          STemp = 0.0
+        } else {
+          STemp = 
+          (Math.pow(parseFloat(preferensi[i].modal), W1).toFixed(3))
+          * (Math.pow(parseFloat(preferensi[i].jlhTargetPasar), W2).toFixed(3))
+          * (Math.pow(parseFloat(preferensi[i].jarakPasarTerdekat), -W3).toFixed(3)) 
+          * (Math.pow(parseFloat(preferensi[i].kepadatanPendudukDiperlukan), W4).toFixed(3))
+          * (Math.pow(parseFloat(preferensi[i].jumlahPesaing), -W5).toFixed(3))
+        }
+        S.push(['U' + (i + 1), usaha[i].nama_usaha, STemp])
+        totalNilaiS += STemp
+        console.log(`S${i+1} = ${S[i][1]}`)
+      }
+
+      console.log(S)
+      console.log('Total nilai S = ' + totalNilaiS)
+
+      //Menentukan Preferensi relatif atau nilai Vektor (V)
+      console.log('Hasil Perhitungan nilai Vektor V')
+
+      let V = []
+      for(let i = 0; i < usaha.length; i++) {
+        let v = (parseFloat(S[i][2]) /totalNilaiS).toFixed(3)
+        
+        V.push({'v': v, 'idUSaha': usaha[i].id_usaha, 'namaUsaha':usaha[i].nama_usaha})
+        usaha[i]['v'] = v
+      }
+
+      console.log(V)
+      
+      // Filter usaha
+
+      let usahaDirekomendasikan = []
+      usaha.forEach(u => {
+        if(u.v > 0 ) {
+          usahaDirekomendasikan.push(u)
+        }
+      })
+
+
+      renderHasilRekomendasi(usahaDirekomendasikan, pos)
+    }
+
+    function compareUsaha( a, b ) {
+      if ( a.v > b.v ){
+        return -1;
+      }
+      if ( a.v < b.v ){
+        return 1;
+      }
+      return 0;
+    }
+
+    
+    function renderHasilRekomendasi(dataUsaha, pos) {
       //const url = 'localhost:3000/api'.replace(/^http:\/\//i, 'https://');
       // const position = {lat: lat, lng: lng}
-
-      fetch('http://localhost:3000/api').then(response => {
-        return response.json()
-      }).then(data => {
+      let data = dataUsaha.sort(compareUsaha)
+      
         let analisisLokasiHtml = ''
         analisisLokasiHtml += 
         `
@@ -308,7 +667,7 @@
         `
         $('#hasil_analisis').html(analisisLokasiHtml)
         let rekomendasiHtml = ''
-        if(data.usaha.length > 0) {
+        if(data.length > 0) {
           rekomendasiHtml = 
             `
               <div class="container mt-4">
@@ -316,11 +675,11 @@
                   <div class="col-12 mb-2">
                     <h4>Daftar Rekomendasi Usaha</h4>
                     <div class="alert alert-success" role="alert">
-                      Ditemukan ${data.usaha.length} jenis usaha yang cocok di lokasi anda.
+                      Ditemukan ${data.length} jenis usaha yang cocok di lokasi anda.
                     </div>
                   </div>
             `
-          data.usaha.forEach(usaha => {
+          data.forEach(usaha => {
             rekomendasiHtml +=
             `
               <div class="col-md-4 col-sm-6 mb-4">
@@ -362,7 +721,7 @@
         $([document.documentElement, document.body]).animate({
           scrollTop: $("#rekomendasi").offset().top - 80
         }, 1000);
-      })
+      
     }
     
     $(document).ready(function(){
@@ -383,10 +742,10 @@
           $('#alert_form_usaha').html(alertHtml)
 
         } else {
-          console.log("length", markers.length)
           const lat = markers[0].getPosition().lat()
           const lng = markers[0].getPosition().lng()
           cariRekomendasiUsaha(markers[0].getPosition())
+          
         }
       })
 
@@ -396,7 +755,6 @@
           $('#nav-scroll').removeClass('container-fluid')
           $('#nav-scroll').addClass('container')
           $('#navigasi').addClass('bg-white')
-
         } else {
           $('#navigasi').removeClass('bg-white') 
           $('#nav-scroll').removeClass('container')

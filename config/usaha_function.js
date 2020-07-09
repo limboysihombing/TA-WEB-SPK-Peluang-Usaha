@@ -21,6 +21,15 @@ var usaha_function = {
       result(results)
     })
   },
+  ambilDataUsahaByModal: (modal, result) => {
+    
+    conn.query(`SELECT * FROM usaha WHERE modal >= ${modal}`, (err, results) => {
+      if(err) throw err
+      
+      result(results)
+    })
+  },
+
   ambilSatuDataUsaha: (id, result) => {
     conn.query(`SELECT * FROM usaha where id_usaha = "${id}"`, (err, data) => {
       if(err) throw err
