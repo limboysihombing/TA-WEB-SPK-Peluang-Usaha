@@ -1,3 +1,115 @@
+<div class="loading-page" id="loading-page">
+  <div class="d-flex justify-content-center" >
+    <div id="loading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <div class="text-light">
+        <h4>Sedang Menganalisis Lokasi...</h4>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<section id="detail_usaha" class="bg-white">
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4 shadow">
+          <img src="../img/img-3.jpg" height="300px" alt="" class="card-img-top">
+          <div class="card-body position-relative">
+            <a href="/simpan_usaha?idu={{usaha.id_usaha}}&idw=1245" type="button" id="btn-save" data-toggle="tooltip" data-placement="bottom" title="Simpan" class="btn btn-sm btn-info shadow"><i class="fas fa-save"></i></a>
+            
+            <h5 class="card-title"><strong>Detail Usaha {{usaha.nama_usaha}}</strong></h5>
+            <h6>Modal Usaha: Rp.{{usaha.modal}}</h6>
+
+            <h6>Deskripsi Usaha</h6>
+            <p>{{usaha.deskripsi}}</p>
+            
+            <div class="row">
+              <div class="col-12">
+                <h6><strong>Analisis Lokasi</strong></h6>
+                <div class="jumbotron" id="target-pesaing">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <h6 class="mb-2">Target Pasar</h6>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="card-border-left shadow mb-2">
+                            <p class="card-title">Hari sudah malam</p>
+                          </div>
+                          <button type="button" class="mt-2 shadow btn btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <h6 class="mb-2">Daftar Pesaing</h6>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="card-border-left shadow mb-2">
+                            <p class="card-title">Hari sudah malam</p>
+                          </div>
+                          <button type="button" class="mt-2 btn shadow btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+                
+              </div>
+            </div>
+
+            
+            <!-- Bahan Baku -->
+            <h6 class="mt-4 mb-2"><strong>Bahan baku</strong></h6>
+
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>Larry</td>
+                    <td>the Bird</td>
+                    <td>@twitter</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            <strong>Analisis Keuntungan</strong>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque necessitatibus maxime, voluptate officia velit sit ratione minus voluptates saepe error inventore tempora quo vel, eligendi, ipsam similique aperiam totam eius.</p>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque necessitatibus maxime, voluptate officia velit sit ratione minus voluptates saepe error inventore tempora quo vel, eligendi, ipsam similique aperiam totam eius.</p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
 <div class="pac-card card rounded bg-white shadow ml-2" id="pac-card">
     <div class="card-body">
       
@@ -41,20 +153,25 @@
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeNiSKscMn5k2Ymh0FKA6Ubmt7weTjVMU&libraries=places&callback=init"></script>
 
   <script>
+    let namaKelurahanLokasi = ''
     let map, infoWindow, geocoder, service, searchBox, circleRadius;
     let markers = [], targetMarkers = [], pesaingMarkers = [];
+
     
     let card = document.getElementById('pac-card');
     let txtLokasi = document.getElementById('text_lokasi');
     let txtModalUsaha = document.getElementById('text_modal_usaha');
     let btnResetForm = document.getElementById('btn-reset-form')
+
+    let tpadat, kpadat, cpadat, padat, spadat;
+    let tingkatKepadatanLokasi = "tidak padat";
     const medan = {lat: 3.597031, lng: 98.678513};
 
     //Init Map
     function init() {
       btnResetForm.style.display = "none"
       map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 11,
+        zoom: 13,
         center: medan,
         mapTypeControl: false,
         fullscreenControl: false,
@@ -159,6 +276,17 @@
 
           if (results[0]) {
             txtLokasi.value = results[0].formatted_address
+
+            let address_component = results[0].address_components
+            for(let i = 0; i< address_component.length; i++) {
+              if(address_component[i].types[0] === 'administrative_area_level_4') {
+                namaKelurahanLokasi = address_component[i].long_name
+                console.log(namaKelurahanLokasi)
+                break
+              }
+            }
+
+            console.log(results)
             btnResetForm.style.display = 'block'
           } else {
             window.alert("Data lokasi tidak ditemukan.");
@@ -261,52 +389,47 @@
       return d; // returns the distance in meter
     };
 
-    let tidakPadat = (x) => {
-      if(x <= 3233) { return 1; }
-      else if(3233 <= x && x <= 8288.75) { 
-        return (8288.75 - x) / (8288.75 - 3233);
-      }
-      else { return 0; }
-    }
+    function hitungKepadatanPenduduk(x) {
 
-    let kurangPadat = (x) => {
-      if (x <= 3233 || x>=8288.75) { return 0; }
-      else if (3233 <= x && x <= 8288.75) {
-        return (x-3233) / (8288.75 - 3233);
+      if (x <= 3233) tpadat = 1;
+      else if (3233 <= x && x <= 8288.75)
+      {
+          tpadat = ((8288.75 - x) / (8288.75 - 3233)).toFixed(2);
       }
-      else { return (13344.5-x) / (13344.5 - 3233); }
-    }
+      else tpadat = 0;
 
-    function cukupPadat(x) {
-      if (x <= 8288.75 || x >= 18400.25) { return 0; }
-      else if (8288.75 <= x && x <= 13344.5){
-        return  (x-8288.75) / (13344.5-8288.75); 
+      if (x <= 3233 || x >= 8288.75) kpadat = 0;
+      else if (3233 <= x && x <= 8288.75)
+      {
+          kpadat = ((x - 3233) / (8288.75 - 3233)).toFixed(2);
       }
-      else {
-        return (18400.25-x)/(18400.25-8288.75);
-      }
-    }
+      else kpadat = ((13344.5 - x) / (13344.5 - 3233)).toFixed(2);
 
-    function cekPadat(x) {
-      if (x <= 13344.5 || x >= 23456) { return 0; }
-      else if (13344.5 <= x && x <= 18400.25){
-        return (x-13344.5) / (18400.25 - 13344.5);
-      }
-      else {
-        return (23456-x)/(23456-13344.5);
-      } 
-    }
+      if (x <= 8288.75 || x >= 18400.25) cpadat = 0;
+      else if (8288.75 <= x && x <= 13344.5)
+        cpadat = ((x - 8288.75) / (13344.5 - 8288.75)).toFixed(2);
+      else 
+        cpadat = ((18400.25 - x) / (18400.25 - 8288.75)).toFixed(2);
 
-    function sangatPadat(x) {
-      if (x <= 18400.25) { return 0 }
-      else if (18400.25 <= x && x <= 23456) {
-        return (x-18400.25) / (23456 - 18400.25);
-      }
-      else {
-        return 1;
-      } 
-    }
+      if (x <= 13344.5 || x >= 23456) padat = 0;
+      else if (13344.5 <= x && x <= 18400.25)
+        padat = ((x - 13344.5) / (18400.25 - 13344.5)).toFixed(2);
+      else 
+        padat = ((23456 - x) / (23456 - 13344.5)).toFixed(2);
 
+      if (x <= 18400.25) spadat = 0;
+      else if (18400.25 <= x && x <= 23456)
+        spadat = ((x - 18400.25) / (23456 - 18400.25)).toFixed(2);
+      else 
+        spadat = 1;
+
+      if (kpadat >= tpadat) { tingkatKepadatanLokasi = "kurang padat"; }
+      if (cpadat >= kpadat && cpadat >= tpadat) { tingkatKepadatanLokasi = "cukup padat"; }
+      if (padat >= cpadat && padat >= kpadat && padat >=tpadat) { tingkatKepadatanLokasi = "padat"; }
+      if (spadat >= padat && spadat >= cpadat && spadat >= kpadat && spadat>=tpadat) { tingkatKepadatanLokasi = "sangat padat"; }
+
+
+    }
     // Cari pesaing / usaha sejenis
     function cariPesaing(pos, usaha) {
       return new Promise((resolve, reject) => {
@@ -375,6 +498,19 @@
       })
     }
 
+    const ambilTingkatKepadatanLokasi = (kelurahan) => {
+      return new Promise((resolve, reject) => {
+        fetch(`http://localhost:3000/api/wilayah?kelurahan=${kelurahan}`).then(response => {
+          return response.json()
+        }).then(data => {
+          console.log(data)
+          resolve(parseFloat(data.wilayah.kepadatan_penduduk))
+        }).catch(reason => {
+          alert('wilayah tidak ditemukan')
+        })
+      })
+    }
+
     //async function ambilRekomendasiTargetPasar(pos, target) {
     //  return await cariTargetPasar(pos, target)
     //}
@@ -393,13 +529,13 @@
     async function cariRekomendasiUsaha(pos) {
       // Ambil data usaha
       let modalUsaha = txtModalUsaha.value
-      let tKepadatan = 16181, tpadat, kpadat, cpadat, padat, spadat
       let listTargetPasar = []
       let dataTargetPasar = {}
       let dataPesaing = {}
-      tingkatKepadatanLokasi = "";
+      
       
       let usaha = await ambilDataUsaha()
+      let tKepadatan = await ambilTingkatKepadatanLokasi(namaKelurahanLokasi)
       console.log('Daftar Usaha Dari Database')
       console.log(usaha)
       
@@ -437,32 +573,12 @@
 
 
       console.log('Nilai kepadatan pada lokasi: ')
-      tpadat = tidakPadat(tKepadatan).toFixed(2)
-      tingkatKepadatanLokasi = "tidak Padat"
+      hitungKepadatanPenduduk(tKepadatan)
+
       console.log(`Tidak padat\t: ${tpadat}`)
-
-      kpadat = kurangPadat(tKepadatan).toFixed(2)
-      if (kpadat >= tpadat) {
-        tingkatKepadatanLokasi = "kurang padat"
-      }
       console.log(`Kurang Padat\t: ${tpadat}`)
-
-      cpadat = cukupPadat(tKepadatan).toFixed(2)
-      if (cpadat >= kpadat) {
-        tingkatKepadatanLokasi = "cuku padat"
-      }
       console.log(`Cukup padat\t: ${cpadat}`)
-
-      padat = cekPadat(tKepadatan).toFixed(2)
-      if (padat >= cpadat) {
-        tingkatKepadatanLokasi = "padat"
-      }
       console.log(`Padat\t: ${padat}`)
-
-      spadat = sangatPadat(tKepadatan).toFixed(2)
-      if (spadat >= padat) {
-        tingkatKepadatanLokasi = "sangat padat"
-      }
       console.log(`Sangat Padat\t: ${spadat}`)
       console.log()
       console.log(`Maka lokasi = ${tingkatKepadatanLokasi}`)
@@ -626,6 +742,7 @@
 
 
       renderHasilRekomendasi(usahaDirekomendasikan, pos)
+      $('#loading-page').hide()
     }
 
     function compareUsaha( a, b ) {
@@ -652,12 +769,12 @@
             <div class="col-12">
 
               <div class="jumbotron">
-                <h1 class="display-4">Hasil Analisis Lokasi</h1>
-                <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+                <p class="h3 text-success">
+                  <strong>Ditemukan ${data.length} Rekomendasi Usaha Yang Tepat Di Lokasi Anda.</p></strong>
+                <p class="lead">Titik Lokasi: &emsp;${txtLokasi.value}</p>
                 <hr class="my-4">
-                <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-                <p class="lead">
-                  <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                <p>
+                  Kepadatan Penduduk : <br>
                 </p>
               </div>
 
@@ -674,17 +791,15 @@
                 <div class="row">
                   <div class="col-12 mb-2">
                     <h4>Daftar Rekomendasi Usaha</h4>
-                    <div class="alert alert-success" role="alert">
-                      Ditemukan ${data.length} jenis usaha yang cocok di lokasi anda.
-                    </div>
                   </div>
             `
           data.forEach(usaha => {
+            console.log(pos)
             rekomendasiHtml +=
             `
               <div class="col-md-4 col-sm-6 mb-4">
                 <div class="card card-border-bottom shadow">
-                  <a href="/detail_usaha/${usaha.id_usaha}?lat=${pos.lat}&lng=${pos.lng}&idw=22918">
+                  <a href="#detail_usaha/${usaha.id_usaha}?lat=${pos.lat()}&lng=${pos.lng()}&idw=22918">
                     <img src="img/img-3.jpg" alt="" class="card-img-top">
                   </a>
                   <div class="card-body">
@@ -708,7 +823,7 @@
               <div class="row">
                 <div class="col-12 mb-2">
                   <h4>Rekomendasi Usaha</h4>
-                  <div class="alert alert-success" role="alert">
+                  <div class="alert alert-warning" role="alert">
                     Tidak ditemukan peluang usaha yang cocok di lokasi anda.
                   </div>
                 </div>
@@ -719,12 +834,14 @@
         }
         // Scroll to rekomendasi element
         $([document.documentElement, document.body]).animate({
-          scrollTop: $("#rekomendasi").offset().top - 80
+          scrollTop: $("#hasil_analisis").offset().top - 80
         }, 1000);
       
     }
     
     $(document).ready(function(){
+      $('#loading-page').hide()
+      $('#detail_usaha').hide()
 
       $('#btn_cari_usaha').click(() => {
         
@@ -745,6 +862,7 @@
           const lat = markers[0].getPosition().lat()
           const lng = markers[0].getPosition().lng()
           cariRekomendasiUsaha(markers[0].getPosition())
+          $('#loading-page').show()
           
         }
       })

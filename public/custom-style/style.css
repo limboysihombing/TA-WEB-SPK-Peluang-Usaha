@@ -9996,4 +9996,24 @@ a {
   background-size:cover
 }
 
+.loading-page {
+  z-index: 99999;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  background: rgba(0,0,0,0.3);
+  right: 0px;
+}
+#loading {
+  position: absolute;
+  top: 50%;
+}
+#detail_usaha {
+  position: absolute;
+  z-index: 99999;
+  width: 100%;
+  height: 100%;
+
+}
 /*# sourceMappingURL=style.css.map */

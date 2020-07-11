@@ -28,6 +28,12 @@ var wilayah_function = {
       response(results)
     })
   },
+  ambilWilayahByKecamatan: (kel, response) => {
+    conn.query(`SELECT * FROM wilayah WHERE kelurahan = "${kel}"`,(err, results) => {
+      if(err) throw err
+      response(results)
+     })
+  }
 
 }
 
