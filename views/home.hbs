@@ -282,8 +282,27 @@
               if(address_component[i].types[0] === 'administrative_area_level_4') {
                 namaKelurahanLokasi = address_component[i].long_name
                 console.log(namaKelurahanLokasi)
+              
+              }
+              if(address_component[i].types[0] === 'administrative_area_level_2') {
+                if(address_component[i].long_name === 'Kota Medan' || address_component[i].long_name === 'Medan City'){
+                  $('#alert_form_usaha').html('')
+                } else {
+                  console.log(address_component[i].long_name)
+                  let alertHtml =
+                  `
+                    <div class="alert mt-2 alert-warning alert-dismissible fade show" role="alert">
+                      ⚠ Data wilayah tidak ditemukan
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true" class="p-0">&times;</span>
+                      </button>
+                    </div>
+                  `
+                  $('#alert_form_usaha').html(alertHtml)
+                }
                 break
               }
+
             }
 
             console.log(results)
@@ -504,9 +523,11 @@
           return response.json()
         }).then(data => {
           console.log(data)
-          resolve(parseFloat(data.wilayah.kepadatan_penduduk))
-        }).catch(reason => {
-          alert('wilayah tidak ditemukan')
+          if(data.wilayah){
+            resolve(parseFloat(data.wilayah.kepadatan_penduduk))
+          } else {
+            reject('bukan kota medan')
+          }
         })
       })
     }
@@ -525,17 +546,36 @@
       return 0;
     }
 
-
     async function cariRekomendasiUsaha(pos) {
       // Ambil data usaha
       let modalUsaha = txtModalUsaha.value
       let listTargetPasar = []
       let dataTargetPasar = {}
       let dataPesaing = {}
-      
+      let tKepadatan = 0
       
       let usaha = await ambilDataUsaha()
-      let tKepadatan = await ambilTingkatKepadatanLokasi(namaKelurahanLokasi)
+      try {
+
+      tKepadatan = await ambilTingkatKepadatanLokasi(namaKelurahanLokasi)
+      } catch(reason){
+
+        $('#loading-page').hide()
+
+        let alertHtml =
+        `
+          <div class="alert mt-2 alert-warning alert-dismissible fade show" role="alert">
+            ⚠ Data wilayah tidak ditemukan
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true" class="p-0">&times;</span>
+            </button>
+          </div>
+          `
+          $('#alert_form_usaha').html(alertHtml)
+        console.log('alasan = ' + reason)
+        return
+      }
+
       console.log('Daftar Usaha Dari Database')
       console.log(usaha)
       
@@ -574,9 +614,8 @@
 
       console.log('Nilai kepadatan pada lokasi: ')
       hitungKepadatanPenduduk(tKepadatan)
-
       console.log(`Tidak padat\t: ${tpadat}`)
-      console.log(`Kurang Padat\t: ${tpadat}`)
+      console.log(`Kurang Padat\t: ${kpadat}`)
       console.log(`Cukup padat\t: ${cpadat}`)
       console.log(`Padat\t: ${padat}`)
       console.log(`Sangat Padat\t: ${spadat}`)
@@ -638,20 +677,20 @@
           }
           else if(j == 4) {
             let preferensiKepadatan = ["tidakpadat", "kurang padat", "cukup padat", "padat", "sangat padat"]
-            if(item.kepadatan_penduduk == '1') {
-              preferensiKepadatan.forEach((kepadatan, index) => {
-                if(tingkatKepadatanLokasi == kepadatan) {
-                  itemPreferensi['kepadatanPendudukDiperlukan'] = (index + 1)
+            
+            let ramai = 1, sepi = 5
+            for(let a = 0; a < preferensiKepadatan.length; a++) {
+              if( tingkatKepadatanLokasi == preferensiKepadatan[a]) {
+                if(item.kepadatan_penduduk == 1) {
+                  itemPreferensi['kepadatanPendudukDiperlukan'] = ramai
+                } else {
+                  itemPreferensi['kepadatanPendudukDiperlukan'] = sepi
                 }
-              })
-
-            } else {
-              for(let a = preferensiKepadatan.length -1; a > 0; a--) {
-                if(tingkatKepadatanLokasi == preferensiKepadatan[a]){
-                  itemPreferensi['kepadatanPendudukDiperlukan'] = (a-1)
-                }
+                ramai += 1
+                sepi -= 1
               }
             }
+            
           }
           else if(j == 5) {
             let jlh = 1;
@@ -774,7 +813,8 @@
                 <p class="lead">Titik Lokasi: &emsp;${txtLokasi.value}</p>
                 <hr class="my-4">
                 <p>
-                  Kepadatan Penduduk : <br>
+                  Modal Usaha &emsp; : ${txtModalUsaha.value}<br>
+                  Kepadatan Penduduk : ${tingkatKepadatanLokasi}<br>
                 </p>
               </div>
 
@@ -824,7 +864,7 @@
                 <div class="col-12 mb-2">
                   <h4>Rekomendasi Usaha</h4>
                   <div class="alert alert-warning" role="alert">
-                    Tidak ditemukan peluang usaha yang cocok di lokasi anda.
+                    Tidak ditemukan peluang usaha yang tepat di lokasi anda.
                   </div>
                 </div>
               </div>
@@ -863,7 +903,6 @@
           const lng = markers[0].getPosition().lng()
           cariRekomendasiUsaha(markers[0].getPosition())
           $('#loading-page').show()
-          
         }
       })
 
