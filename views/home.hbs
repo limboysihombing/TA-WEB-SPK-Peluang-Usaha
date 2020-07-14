@@ -970,7 +970,6 @@
                 <span id="btn_tutup_detail" style="position: absolute; top: 10px;right: 10px;" class="shadow-sm btn btn-sm btn-outline-danger">Tutup</span>
                 <div class="card-body position-relative">
                   <a href="#" type="button" id="btn_save" data-toggle="tooltip" data-placement="bottom" title="Simpan" class="btn btn-sm btn-info shadow"><i class="fas fa-save"></i></a>
-
                   <h5 class="card-title"><strong>Detail Usaha ${usahaObj.nama_usaha}</strong></h5>
                   <h6>Modal Usaha: Rp.${usahaObj.modal}</h6>
 
@@ -1159,7 +1158,7 @@
         let idUsaha = usahaObj.id_usaha
         let idLokasi = wilayah.id_wilayah
 
-        let url = 'localhost:3000/api/usaha/simpanUsaha'
+        let url = 'http://localhost:3000/api/usaha/simpanUsaha'
         
         fetch(url.replace(/^http:\/\//i, 'https://'), {
           method: 'POST',
