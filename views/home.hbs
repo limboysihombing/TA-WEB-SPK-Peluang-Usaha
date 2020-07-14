@@ -1,10 +1,10 @@
 <div class="loading-page" id="loading-page">
   <div class="d-flex justify-content-center" >
     <div id="loading" class="text-center">
-      <div class="spinner-border text-primary" role="status">
+      <div class="spinner-border text-white" role="status">
         <span class="sr-only">Loading...</span>
       </div>
-      <div class="text-light">
+      <div class="text-white">
         <h4>Sedang Menganalisis Lokasi...</h4>
       </div>
     </div>
@@ -12,103 +12,9 @@
   </div>
 </div>
 
-<section id="detail_usaha" class="bg-white">
-  <div class="container mt-4">
-    <div class="row">
-      <div class="col-12">
-        <div class="card mb-4 shadow">
-          <img src="../img/img-3.jpg" height="300px" alt="" class="card-img-top">
-          <div class="card-body position-relative">
-            <a href="/simpan_usaha?idu={{usaha.id_usaha}}&idw=1245" type="button" id="btn-save" data-toggle="tooltip" data-placement="bottom" title="Simpan" class="btn btn-sm btn-info shadow"><i class="fas fa-save"></i></a>
-            
-            <h5 class="card-title"><strong>Detail Usaha {{usaha.nama_usaha}}</strong></h5>
-            <h6>Modal Usaha: Rp.{{usaha.modal}}</h6>
-
-            <h6>Deskripsi Usaha</h6>
-            <p>{{usaha.deskripsi}}</p>
-            
-            <div class="row">
-              <div class="col-12">
-                <h6><strong>Analisis Lokasi</strong></h6>
-                <div class="jumbotron" id="target-pesaing">
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <h6 class="mb-2">Target Pasar</h6>
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="card-border-left shadow mb-2">
-                            <p class="card-title">Hari sudah malam</p>
-                          </div>
-                          <button type="button" class="mt-2 shadow btn btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <h6 class="mb-2">Daftar Pesaing</h6>
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="card-border-left shadow mb-2">
-                            <p class="card-title">Hari sudah malam</p>
-                          </div>
-                          <button type="button" class="mt-2 btn shadow btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-
-                </div>
-                
-              </div>
-            </div>
-
-            
-            <!-- Bahan Baku -->
-            <h6 class="mt-4 mb-2"><strong>Bahan baku</strong></h6>
-
-            <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
-                </tbody>
-              </table>
-
-            <strong>Analisis Keuntungan</strong>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque necessitatibus maxime, voluptate officia velit sit ratione minus voluptates saepe error inventore tempora quo vel, eligendi, ipsam similique aperiam totam eius.</p>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque necessitatibus maxime, voluptate officia velit sit ratione minus voluptates saepe error inventore tempora quo vel, eligendi, ipsam similique aperiam totam eius.</p>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<section id="detail_usaha" class="bg-white mt-4">
+  
 </section>
-
-
 
 <div class="pac-card card rounded bg-white shadow ml-2" id="pac-card">
     <div class="card-body">
@@ -133,18 +39,42 @@
     </div>
   </div>
   
+<section id="map_section">
   <div class="container-fluid position vh-100 p-0" id="map-container">
     <div id="map"></div>
   </div>
+</section>
 
-  <div id="hasil_analisis">
+<section id="analisis_section">
+  <div id="hasil_analisis"></div>
+</section>
 
+<section id="rekomendasi_section">
+  <div id="rekomendasi"></div>
+</section>
+
+<div class="modal fade" id="map_on_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal_title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-0">
+        
+        <div id="map_modal" style="width: 100%; height: 300px;">
+
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <p class="footer_modal_label"></p>
+      </div>
+    </div>
   </div>
-
-  <div id="rekomendasi">
-    
-  </div>
-
+</div>
   
   <script src="/bootstrap/js/popper.js"></script>
   <script src="/bootstrap/js/jquery.js"></script>
@@ -153,11 +83,12 @@
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeNiSKscMn5k2Ymh0FKA6Ubmt7weTjVMU&libraries=places&callback=init"></script>
 
   <script>
+    let navFixedWidth = false
     let namaKelurahanLokasi = ''
-    let map, infoWindow, geocoder, service, searchBox, circleRadius;
-    let markers = [], targetMarkers = [], pesaingMarkers = [];
+    let wilayah = {}
+    let mapModal, map, infoWindow, geocoder, service, searchBox, circleRadius;
+    let markers = [], modalMarkers = [], pesaingMarkers = [];
 
-    
     let card = document.getElementById('pac-card');
     let txtLokasi = document.getElementById('text_lokasi');
     let txtModalUsaha = document.getElementById('text_modal_usaha');
@@ -167,11 +98,13 @@
     let tingkatKepadatanLokasi = "tidak padat";
     const medan = {lat: 3.597031, lng: 98.678513};
 
+    namaTitikLokasi =''
+
     //Init Map
     function init() {
       btnResetForm.style.display = "none"
       map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 13,
+        zoom: 11,
         center: medan,
         mapTypeControl: false,
         fullscreenControl: false,
@@ -278,21 +211,26 @@
             txtLokasi.value = results[0].formatted_address
 
             let address_component = results[0].address_components
+            namaTitikLokasi = ''
+            nomorTitikLokasi = ''
             for(let i = 0; i< address_component.length; i++) {
               if(address_component[i].types[0] === 'administrative_area_level_4') {
                 namaKelurahanLokasi = address_component[i].long_name
                 console.log(namaKelurahanLokasi)
               
               }
+
               if(address_component[i].types[0] === 'administrative_area_level_2') {
                 if(address_component[i].long_name === 'Kota Medan' || address_component[i].long_name === 'Medan City'){
+
+                  namaTitikLokasi += address_component[i].long_name + '.'
                   $('#alert_form_usaha').html('')
                 } else {
                   console.log(address_component[i].long_name)
                   let alertHtml =
                   `
                     <div class="alert mt-2 alert-warning alert-dismissible fade show" role="alert">
-                      ⚠ Data wilayah tidak ditemukan
+                      ⚠ Lokasi dipilih harus berada di wilayah kota Medan.
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true" class="p-0">&times;</span>
                       </button>
@@ -302,7 +240,18 @@
                 }
                 break
               }
-
+              if(address_component[i].types[0] === "street_number") {
+                nomorTitikLokasi = address_component[i].long_name
+                continue
+              } else if(address_component[i].types[0] === "route") {
+                if(nomorTitikLokasi != '') {
+                  namaTitikLokasi += `${address_component[i].long_name} No. ${nomorTitikLokasi}, `
+                } else {
+                  namaTitikLokasi += `${address_component[i].long_name}, `
+                }
+                continue
+              }
+              namaTitikLokasi += address_component[i].long_name + ', '
             }
 
             console.log(results)
@@ -361,7 +310,8 @@
       }, function() {
         handleLocationError(true, infoWindow, map.getCenter());
       });
-    } else {
+    } 
+    else {
       // Browser doesn't support Geolocation
       handleLocationError(false, infoWindow, map.getCenter());
     }
@@ -376,20 +326,21 @@
 
     let info =[]
 
-    function addTargetMarkers(pos, title, usaha) {
+    function addModalMarkers(pos, title, titikLokasiUsaha, targetMap) {
+      let distance = getDistance(titikLokasiUsaha, pos)
       let marker = new google.maps.Marker({
-        map: map,
+        map: targetMap,
         zoom: 1,
         position: pos,
         title: title
       })
-      targetMarkers.push(marker)
+      modalMarkers.push(marker)
 
-      let distance = getDistance(usaha, pos)
-
-      let window = new google.maps.InfoWindow({  content: `${title} : ${distance}` });
-      window.open(map, marker);
-      info.push(window)
+      let infowindow = new google.maps.InfoWindow({  content: `${title}, Jarak ±${Math.round(distance)}m` });
+      
+      marker.addListener("click", function() {
+        infowindow.open(targetMap, marker);
+      });
     }
     
     let rad = function(x) {
@@ -524,6 +475,7 @@
         }).then(data => {
           console.log(data)
           if(data.wilayah){
+            wilayah = data.wilayah
             resolve(parseFloat(data.wilayah.kepadatan_penduduk))
           } else {
             reject('bukan kota medan')
@@ -532,10 +484,6 @@
       })
     }
 
-    //async function ambilRekomendasiTargetPasar(pos, target) {
-    //  return await cariTargetPasar(pos, target)
-    //}
-    
     function compare( a, b ) {
       if ( a.jarak < b.jarak ){
         return -1;
@@ -636,7 +584,6 @@
         let itemPreferensi = {}
 
         for(let j = 0; j <= 5; j++) {
-          
 
           if(j == 0) {
             itemPreferensi['Alternatif'] = 'U' + (index + 1)
@@ -676,7 +623,7 @@
             itemPreferensi['jarakPasarTerdekat'] = jarak
           }
           else if(j == 4) {
-            let preferensiKepadatan = ["tidakpadat", "kurang padat", "cukup padat", "padat", "sangat padat"]
+            let preferensiKepadatan = ["tidak padat", "kurang padat", "cukup padat", "padat", "sangat padat"]
             
             let ramai = 1, sepi = 5
             for(let a = 0; a < preferensiKepadatan.length; a++) {
@@ -762,9 +709,13 @@
 
       let V = []
       for(let i = 0; i < usaha.length; i++) {
-        let v = (parseFloat(S[i][2]) /totalNilaiS).toFixed(3)
+        let v = 0
+        if(totalNilaiS != 0.0) {
+          v = (parseFloat(S[i][2]) /totalNilaiS).toFixed(3)
+        }
         
         V.push({'v': v, 'idUSaha': usaha[i].id_usaha, 'namaUsaha':usaha[i].nama_usaha})
+        console.log(`${S[i][2]} / ${totalNilaiS}`)
         usaha[i]['v'] = v
       }
 
@@ -780,7 +731,7 @@
       })
 
 
-      renderHasilRekomendasi(usahaDirekomendasikan, pos)
+      renderHasilRekomendasi(usahaDirekomendasikan, dataTargetPasar, dataPesaing, pos)
       $('#loading-page').hide()
     }
 
@@ -795,12 +746,15 @@
     }
 
     
-    function renderHasilRekomendasi(dataUsaha, pos) {
-      //const url = 'localhost:3000/api'.replace(/^http:\/\//i, 'https://');
-      // const position = {lat: lat, lng: lng}
+    function renderHasilRekomendasi(dataUsaha, dataTarget, dataPesaing, pos) {
+      $('#rekomendasi').html('')
+      $('#hasil_analisis').html('')
       let data = dataUsaha.sort(compareUsaha)
       
-        let analisisLokasiHtml = ''
+      let analisisLokasiHtml = ''
+      let rekomendasiHtml = ''
+
+      if(data.length > 0) {
         analisisLokasiHtml += 
         `
         <div class="container mt-4">
@@ -809,13 +763,104 @@
 
               <div class="jumbotron">
                 <p class="h3 text-success">
-                  <strong>Ditemukan ${data.length} Rekomendasi Usaha Yang Tepat Di Lokasi Anda.</p></strong>
-                <p class="lead">Titik Lokasi: &emsp;${txtLokasi.value}</p>
-                <hr class="my-4">
-                <p>
-                  Modal Usaha &emsp; : ${txtModalUsaha.value}<br>
-                  Kepadatan Penduduk : ${tingkatKepadatanLokasi}<br>
+                  <strong>Ditemukan ${data.length} Rekomendasi Usaha Yang Tepat Di Lokasi Anda.</strong>
                 </p>
+                <p class="lead">
+                  <i class="fas fa-map-marker fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Titik Lokasi: &emsp;${namaTitikLokasi}
+                </p>
+                <hr class="my-4">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <svg class="mr-2" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z"/>
+                          <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                        </svg>
+                        
+                        Modal Usaha
+                        </td>
+                      <td> : </td>
+                      <td>Rp.${txtModalUsaha.value}</td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-users fa-sm fa-fw mr-2"></i> Tingkat Kepadatan Penduduk</td>
+                      <td> : </td>
+                      <td>${tingkatKepadatanLokasi}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        `
+        
+        $('#hasil_analisis').html(analisisLokasiHtml)
+        rekomendasiHtml = 
+          `
+            <div class="container mt-4">
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <h4>Daftar Rekomendasi Usaha</h4>
+                </div>
+          `
+        data.forEach(usaha => {
+          rekomendasiHtml +=
+          `
+            <div class="col-md-4 col-sm-6 mb-4">
+              <div class="card card-border-bottom shadow">
+                <img class="img-item-usaha" height="250px" id="${usaha.id_usaha}" src="img/img-3.jpg" alt="" class="card-img-top">
+                <div class="card-body">
+                  <h5 class="card-title"><a href="/detail_usaha/${usaha.id_usaha}"><strong>${usaha.nama_usaha}</strong></a></h5>
+                  <p class="card-text">Modal &emsp; : Rp.${usaha.modal}<br><small>Kategori &emsp; : ${usaha.jenis_usaha}</small></p>
+                </div>
+              </div>
+            </div>
+          `
+        });
+
+        rekomendasiHtml += `
+            </div>
+          </div>
+        `
+        $('#rekomendasi').html(rekomendasiHtml)
+      } 
+      else {
+        analisisLokasiHtml += 
+        `
+        <div class="container mt-4">
+          <div class="row">
+            <div class="col-12">
+
+              <div class="jumbotron">
+                <p class="h3 text-warning">
+                  <strong>Tidak Ditemukan Rekomendasi Usaha Yang Tepat Di Lokasi Anda</strong>
+                </p>
+                <i class="fas fa-map-marker fa-sm fa-fw mr-2 text-gray-400"></i>
+                <p class="lead">Titik Lokasi: &emsp;${namaTitikLokasi}</p>
+                <hr class="my-4">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                      <svg class="mr-2" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z"/>
+                          <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                        </svg>
+                      Modal Usaha</td>
+                      <td> : </td>
+                      <td>${txtModalUsaha.value}</td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-users fa-sm fa-fw mr-2"></i> Tingkat Kepadatan Penduduk</td>
+                      <td> : </td>
+                      <td>${tingkatKepadatanLokasi}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
 
             </div>
@@ -823,66 +868,29 @@
         </div>
         `
         $('#hasil_analisis').html(analisisLokasiHtml)
-        let rekomendasiHtml = ''
-        if(data.length > 0) {
-          rekomendasiHtml = 
-            `
-              <div class="container mt-4">
-                <div class="row">
-                  <div class="col-12 mb-2">
-                    <h4>Daftar Rekomendasi Usaha</h4>
-                  </div>
-            `
-          data.forEach(usaha => {
-            console.log(pos)
-            rekomendasiHtml +=
-            `
-              <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card card-border-bottom shadow">
-                  <a href="#detail_usaha/${usaha.id_usaha}?lat=${pos.lat()}&lng=${pos.lng()}&idw=22918">
-                    <img src="img/img-3.jpg" alt="" class="card-img-top">
-                  </a>
-                  <div class="card-body">
-                    <h5 class="card-title"><a href="/detail_usaha/${usaha.id_usaha}"><strong>${usaha.nama_usaha}</strong></a></h5>
-                    <p class="card-text">Modal &emsp; : Rp.${usaha.modal}<br><small>Kategori &emsp; : ${usaha.jenis_usaha}</small></p>
-                  </div>
-                </div>
-              </div>
-            `
-          });
+      }
+      // Scroll to rekomendasi element
+      $([document.documentElement, document.body]).animate({
+        scrollTop: $("#hasil_analisis").offset().top - 80
+      }, 1000);
 
-          rekomendasiHtml += `
-              </div>
-            </div>
-          `
-          $('#rekomendasi').html(rekomendasiHtml)
-        } else {
-          rekomendasiHtml += 
-          `
-            <div class="container mt-4">
-              <div class="row">
-                <div class="col-12 mb-2">
-                  <h4>Rekomendasi Usaha</h4>
-                  <div class="alert alert-warning" role="alert">
-                    Tidak ditemukan peluang usaha yang tepat di lokasi anda.
-                  </div>
-                </div>
-              </div>
-            </div>
-          `
-          $('#rekomendasi').html(rekomendasiHtml)
-        }
-        // Scroll to rekomendasi element
-        $([document.documentElement, document.body]).animate({
-          scrollTop: $("#hasil_analisis").offset().top - 80
-        }, 1000);
-      
+      let imgItemUsaha = $('.img-item-usaha')
+      for(let i = 0; i< imgItemUsaha.length; i++) {
+        const itemId = $(imgItemUsaha[i]).attr('id')
+        $(imgItemUsaha[i]).click((e) => {
+
+          let objUsaha = data.find((u) => {
+            return u.id_usaha == itemId
+          })
+          let namaUsaha = objUsaha.nama_usaha
+          renderDetailUsaha(objUsaha, dataTarget, dataPesaing, pos)
+        })
+      }
     }
     
     $(document).ready(function(){
       $('#loading-page').hide()
       $('#detail_usaha').hide()
-
       $('#btn_cari_usaha').click(() => {
         
         if(!$.trim($('#text_lokasi').val()) || !$.trim($('#text_modal_usaha').val())) {
@@ -908,16 +916,272 @@
 
       window.onscroll = () => {
         let currentScrollPos = window.pageYOffset
-        if (currentScrollPos > 100) {
-          $('#nav-scroll').removeClass('container-fluid')
-          $('#nav-scroll').addClass('container')
-          $('#navigasi').addClass('bg-white')
+        if(!navFixedWidth) {
+          if (currentScrollPos > 100) {
+              $('#nav-scroll').removeClass('container-fluid')
+              $('#nav-scroll').addClass('container')
+              $('#navigasi').addClass('bg-white')
+          } else {
+            $('#navigasi').removeClass('bg-white') 
+            
+            $('#nav-scroll').removeClass('container')
+            $('#nav-scroll').addClass('container-fluid')
+          }
         } else {
-          $('#navigasi').removeClass('bg-white') 
-          $('#nav-scroll').removeClass('container')
-          $('#nav-scroll').addClass('container-fluid')
+          $('#nav-scroll').removeClass('container-fluid').removeClass('container').addClass('container')
+          $('#navigasi').removeClass('fixed-top').addClass('sticky-top').addClass('bg-white')
         }
       }
     });
 
+    let scrlPos = 0
+    function renderDetailUsaha(usahaObj, target, pesaing, titikLokasiUsaha) {
+      
+      // Gabungkan target pasar
+      let listTarget = usahaObj.target_pasar.toLowerCase().split(',')
+      let listDataTarget = []
+      listTarget.forEach(t => {
+        console.log(t.trim())
+        console.log(target[t.trim()])
+        listDataTarget = [...listDataTarget, ...target[t.trim()]];
+
+      })
+      let listDataPesaing = pesaing[usahaObj.nama_usaha]
+
+      // Gabungkan pesaing
+      console.log(target)
+      console.log(pesaing)
+      console.log(listDataTarget)
+      scrlPos = window.pageYOffset
+
+      navFixedWidth = true
+      $('#analisis_section').hide()
+      $('#rekomendasi_section').hide()
+      $('#map_section').hide()
+      $('#detail_usaha').show()
+
+      let detailUsahaHtml = 
+      `
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <div class="card mb-4 shadow position-relative">
+                <img src="../img/img-3.jpg" height="300px" alt="" class="card-img-top">
+                <span id="btn_tutup_detail" style="position: absolute; top: 10px;right: 10px;" class="shadow-sm btn btn-sm btn-outline-danger">Tutup</span>
+                <div class="card-body position-relative">
+                  <a href="#" type="button" id="btn_save" data-toggle="tooltip" data-placement="bottom" title="Simpan" class="btn btn-sm btn-info shadow"><i class="fas fa-save"></i></a>
+
+                  <h5 class="card-title"><strong>Detail Usaha ${usahaObj.nama_usaha}</strong></h5>
+                  <h6>Modal Usaha: Rp.${usahaObj.modal}</h6>
+
+                  <h6>Deskripsi Usaha</h6>
+                  <p>${usahaObj.deskripsi}</p>
+                  
+                  <div class="row">
+                    <div class="col-12">
+                      <h6><strong>Analisis Lokasi</strong></h6>
+                      <div class="jumbotron" id="target-pesaing">
+                        <div class="row">
+                          <div class="col-md-6 mb-3">
+                            <h6 class="mb-2">Target Pasar (${listDataTarget.length} tempat)</h6>
+                            <div class="row">
+                              <div class="col-12">
+                                <ul class="list-group shadow">
+                                  
+                                
+                                `
+                                listDataTarget.forEach(t => {
+                                  detailUsahaHtml += `
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      ${t.name}
+                                      <span class="badge badge-light badge-pill">±${Math.round(t.jarak)}m</span>
+                                    </li>
+
+                                  `
+                                })
+                                detailUsahaHtml += `
+                                </ul>
+                                <button type="button" id="target_on_map" class="mt-2 shadow btn btn-info btn-sm">Lihat dalam Peta</button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6 mb-3">
+                            <h6 class="mb-2">Daftar Pesaing (${listDataPesaing.length} usaha)</h6>
+                            <div class="row">
+                              <div class="col-12">
+                                <ul class="list-group shadow">
+                                `
+                                if(listDataPesaing.length > 0) {
+                                  listDataPesaing.forEach(p => {
+                                    detailUsahaHtml += `
+                                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        ${p.name}
+                                        <span class="badge badge-light badge-pill">±${Math.round(p.jarak)}m</span>
+                                      </li>
+                                    `
+                                  })
+                                     
+                                    detailUsahaHtml += `</ul><button type="button" id="pesaing_on_map" class="mt-2 shadow btn btn-info btn-sm">Lihat dalam Peta</button>`
+                                }
+                                else {
+                                  detailUsahaHtml += `
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      Tidak ada pesaing dengan jenis usaha yang sama.
+                                      
+                                    </li>
+                                  </ul>
+                                  `
+                                }
+                          detailUsahaHtml += `
+                                
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                  
+                  <!-- Bahan Baku -->
+                  <h6 class="mt-4 mb-2"><strong>Bahan baku</strong></h6>
+
+                  <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">First</th>
+                          <th scope="col">Last</th>
+                          <th scope="col">Handle</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">1</th>
+                          <td>Mark</td>
+                          <td>Otto</td>
+                          <td>@mdo</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">2</th>
+                          <td>Jacob</td>
+                          <td>Thornton</td>
+                          <td>@fat</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">3</th>
+                          <td>Larry</td>
+                          <td>the Bird</td>
+                          <td>@twitter</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  <strong>Analisis Keuntungan</strong>
+                  <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque necessitatibus maxime, voluptate officia velit sit ratione minus voluptates saepe error inventore tempora quo vel, eligendi, ipsam similique aperiam totam eius.</p>
+                  <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque necessitatibus maxime, voluptate officia velit sit ratione minus voluptates saepe error inventore tempora quo vel, eligendi, ipsam similique aperiam totam eius.</p>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+
+      $('#detail_usaha').html(detailUsahaHtml)
+      $([document.documentElement, document.body]).animate({
+          scrollTop: 0
+        }, 500);
+
+      $('#btn_tutup_detail').click(() => {
+        $('#map_section').show()
+        $('#analisis_section').show()
+        $('#rekomendasi_section').show()
+        $('#detail_usaha').hide()
+        
+        $([document.documentElement, document.body]).animate({
+          scrollTop: scrlPos
+        }, 500);
+
+      })
+
+
+      $('#target_on_map').click(() => {
+        $('#map_on_modal').modal('show')
+        $('#footer_modal_label').text(`Terdapat sekitar ${listDataTarget.length} tempat.`)
+        $('#modal_title').text('Peta Target Pasar')
+        
+        mapModal = new google.maps.Map(document.getElementById('map_modal'), {
+          zoom: 15,
+          center: titikLokasiUsaha,
+          mapTypeControl: false,
+          fullscreenControl: false,
+          scaleControl: true,
+          streetViewControl: false,
+          scaleControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
+          streetViewControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+        })
+
+        listDataTarget.forEach(target => {
+          addModalMarkers(target.geometry.location, target.name, titikLokasiUsaha, mapModal)
+        })
+
+      })
+
+      $('#pesaing_on_map').click(() => {
+        $('#map_on_modal').modal('show')
+        $('#footer_modal_label').text(`Terdapat sekitar ${listDataPesaing.length} usaha.`)
+        $('#modal_title').text('Peta Daftar Pesaing')
+        
+        mapModal = new google.maps.Map(document.getElementById('map_modal'), {
+          zoom: 15,
+          center: titikLokasiUsaha,
+          mapTypeControl: false,
+          fullscreenControl: false,
+          scaleControl: true,
+          streetViewControl: false,
+          scaleControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
+          streetViewControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+        })
+
+        listDataPesaing.forEach(target => {
+          addModalMarkers(target.geometry.location, target.name, titikLokasiUsaha, mapModal)
+        })
+
+      })
+
+      $('#btn_save').click(() => {
+        let lat = titikLokasiUsaha.lat()
+        let lng = titikLokasiUsaha.lng()
+        let idUsaha = usahaObj.id_usaha
+        let idLokasi = wilayah.id_wilayah
+
+        let url = 'localhost:3000/api/usaha/simpanUsaha'
+        
+        fetch(url.replace(/^http:\/\//i, 'https://'), {
+          method: 'POST',
+          headers : {
+            'Content-type' : 'application/json'
+          },
+          body: {
+            id: 'asfdl',
+            id_usaha : idUsaha,
+            'lat' : lat,
+            'lng' : lng,
+            'id_lokasi' : idLokasi
+          }
+        }).then(res => res.text())
+			.then(teks => console.log(teks))
+			.catch(err => console.log(err));
+
+      })
+
+
+    }
+
   </script>
+
+  

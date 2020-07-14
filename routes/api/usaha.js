@@ -16,6 +16,9 @@ router.get('/', (req, res) =>{
     res.json({usaha: result})
   })
 })
+router.post('/simpanUsaha', (req, res) => {
+  res.send(req.body)
+})
 
 router.get('/*', (req, res) => {
   res.json({msg: 'Halaman tidak ditemukan.'})
