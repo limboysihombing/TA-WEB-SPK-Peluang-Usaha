@@ -460,7 +460,13 @@
     
     const ambilDataUsaha = () => {
       return new Promise((resolve, reject) => {
-        fetch(`http://localhost:3000/api/usaha`).then(response => {
+        fetch(`http://localhost:3000/api/usaha/ambilSemuaUsaha`, 
+        {
+          headers: {
+            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF9wZW5nZ3VuYSI6Ik9BazVSOVQyR04iLCJlbWFpbCI6InVzZXJAbWFpbC5jb20iLCJuYW1hX3BlbmdndW5hIjoidXNlciIsImlhdCI6MTU5NDcwMjg0N30.G_H_qaNIWPBtMz90RS0CP1L7sRs7QAC-1lOxaA_h8pg',
+          },
+          mode: 'cors',
+        }).then(response => {
           return response.json()
         }).then(data => {
           resolve(data.usaha)
@@ -470,7 +476,8 @@
 
     const ambilTingkatKepadatanLokasi = (kelurahan) => {
       return new Promise((resolve, reject) => {
-        fetch(`http://localhost:3000/api/wilayah?kelurahan=${kelurahan}`).then(response => {
+        fetch(`http://localhost:3000/api/wilayah?kelurahan=${kelurahan}`
+        ).then(response => {
           return response.json()
         }).then(data => {
           console.log(data)
@@ -814,7 +821,7 @@
               <div class="card card-border-bottom shadow">
                 <img class="img-item-usaha" height="250px" id="${usaha.id_usaha}" src="img/img-3.jpg" alt="" class="card-img-top">
                 <div class="card-body">
-                  <h5 class="card-title"><a href="/detail_usaha/${usaha.id_usaha}"><strong>${usaha.nama_usaha}</strong></a></h5>
+                  <h5 class="card-title"><a style="cursor: pointer;" id="${usaha.id_usaha}" class="title-item-usaha"><strong>${usaha.nama_usaha}</strong></a></h5>
                   <p class="card-text">Modal &emsp; : Rp.${usaha.modal}<br><small>Kategori &emsp; : ${usaha.jenis_usaha}</small></p>
                 </div>
               </div>
@@ -875,9 +882,21 @@
       }, 1000);
 
       let imgItemUsaha = $('.img-item-usaha')
+      let titleItemUsaha = $('.title-item-usaha')
       for(let i = 0; i< imgItemUsaha.length; i++) {
         const itemId = $(imgItemUsaha[i]).attr('id')
         $(imgItemUsaha[i]).click((e) => {
+
+          let objUsaha = data.find((u) => {
+            return u.id_usaha == itemId
+          })
+          let namaUsaha = objUsaha.nama_usaha
+          renderDetailUsaha(objUsaha, dataTarget, dataPesaing, pos)
+        })
+      }
+      for(let i = 0; i< titleItemUsaha.length; i++) {
+        const itemId = $(titleItemUsaha[i]).attr('id')
+        $(titleItemUsaha[i]).click((e) => {
 
           let objUsaha = data.find((u) => {
             return u.id_usaha == itemId
@@ -935,7 +954,9 @@
     });
 
     let scrlPos = 0
-    function renderDetailUsaha(usahaObj, target, pesaing, titikLokasiUsaha) {
+    
+
+    async function renderDetailUsaha(usahaObj, target, pesaing, titikLokasiUsaha) {
       
       // Gabungkan target pasar
       let listTarget = usahaObj.target_pasar.toLowerCase().split(',')
@@ -947,11 +968,17 @@
 
       })
       let listDataPesaing = pesaing[usahaObj.nama_usaha]
+      let baseUrl = 'http://localhost:3000/api/usaha'
+
+      let latitude = titikLokasiUsaha.lat()
+      let longitude = titikLokasiUsaha.lng()
+      let id_usaha = usahaObj.id_usaha
+      let id_wilayah = wilayah.id_wilayah
+      let btnSaveToggle = 0
+
 
       // Gabungkan pesaing
-      console.log(target)
-      console.log(pesaing)
-      console.log(listDataTarget)
+      
       scrlPos = window.pageYOffset
 
       navFixedWidth = true
@@ -969,10 +996,10 @@
                 <img src="../img/img-3.jpg" height="300px" alt="" class="card-img-top">
                 <span id="btn_tutup_detail" style="position: absolute; top: 10px;right: 10px;" class="shadow-sm btn btn-sm btn-outline-danger">Tutup</span>
                 <div class="card-body position-relative">
-                  <a href="#" type="button" id="btn_save" data-toggle="tooltip" data-placement="bottom" title="Simpan" class="btn btn-sm btn-info shadow"><i class="fas fa-save"></i></a>
+                  <button id="btn_save" data-toggle="tooltip" data-placement="bottom" title="Simpan" class="btn btn-sm btn-info shadow"><i class="fas fa-save"></i></button>
                   <h5 class="card-title"><strong>Detail Usaha ${usahaObj.nama_usaha}</strong></h5>
                   <h6>Modal Usaha: Rp.${usahaObj.modal}</h6>
-
+                  <div id="save_alert"></div>
                   <h6>Deskripsi Usaha</h6>
                   <p>${usahaObj.deskripsi}</p>
                   
@@ -1090,6 +1117,7 @@
         </div>
       `
 
+
       $('#detail_usaha').html(detailUsahaHtml)
       $([document.documentElement, document.body]).animate({
           scrollTop: 0
@@ -1106,7 +1134,6 @@
         }, 500);
 
       })
-
 
       $('#target_on_map').click(() => {
         $('#map_on_modal').modal('show')
@@ -1151,36 +1178,122 @@
         })
 
       })
-
-      $('#btn_save').click(() => {
-        let lat = titikLokasiUsaha.lat()
-        let lng = titikLokasiUsaha.lng()
-        let idUsaha = usahaObj.id_usaha
-        let idLokasi = wilayah.id_wilayah
-
-        let url = 'http://localhost:3000/api/usaha/simpanUsaha'
-        
-        fetch(url.replace(/^http:\/\//i, 'https://'), {
-          method: 'POST',
-          headers : {
-            'Content-type' : 'application/json'
-          },
-          body: {
-            id: 'asfdl',
-            id_usaha : idUsaha,
-            'lat' : lat,
-            'lng' : lng,
-            'id_lokasi' : idLokasi
-          }
-        }).then(res => res.text())
-			.then(teks => console.log(teks))
-			.catch(err => console.log(err));
-
+      
+      //cek apakah usaha sudah ada tersimpan
+      cekUsahaTersimpan(baseUrl+'/cekUsahaTersimpan', {latitude, longitude, id_usaha, id_wilayah})
+      .then(data => {
+        console.log(data)
+        if(data.usaha.length > 0) {
+          $('#btn_save').html('<i class="fas fa-trash"></i>')
+          $("#btn_save").attr("title", "Hapus usaha tersimpan.")
+          $('#btn_save').removeClass('btn-info').addClass('btn-warning');
+          $('#btn_save').prop('disabled', false);
+          btnSaveToggle = 1
+        }
       })
 
+      $('#btn_save').click(() => {
+        
+        $('#btn_save').prop('disabled', true);
+
+        if(btnSaveToggle == 0) {
+          simpanUsaha(baseUrl + '/simpanUsaha', {latitude, longitude, id_usaha, id_wilayah})
+          .then(data => {
+            console.log(data); // JSON data parsed by `data.json()` call
+            if(data.status == 200) {
+              $('#btn_save').html('<i class="fas fa-trash"></i>')
+              $("#btn_save").attr("title", "Hapus usaha tersimpan.")
+              $('#btn_save').removeClass('btn-info').addClass('btn-warning');
+              $('#btn_save').prop('disabled', false);
+              let alertHtml = `<div class="alert alert-success" role="alert">Usaha ini berhasil di simpan.</div>`
+              $('#save_alert').html(alertHtml)
+              btnSaveToggle = 1
+            }
+          });
+        } else {
+          hapusUsahaTersimpan(baseUrl+'/hapusUsahaTersimpan', {latitude, longitude, id_usaha, id_wilayah})
+          .then(data => {
+            
+            if (data.status == 200) {
+              $('#btn_save').html('<i class="fas fa-save"></i>')
+              $("#btn_save").attr("title", "Simpan Usaha.")
+              $('#btn_save').removeClass('btn-warning').addClass('btn-info');
+              $('#btn_save').prop('disabled', false);
+              let alertHtml = `<div class="alert alert-success" role="alert">Usaha ini sudah tidak tersimpan.</div>`
+              $('#save_alert').html(alertHtml)
+              btnSaveToggle = 0
+            }
+          })
+        }
+      })
 
     }
+    function readCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0;i < ca.length;i++) {
+          var c = ca[i];
+          while (c.charAt(0)==' ') c = c.substring(1,c.length);
+          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+      }
+      return null;
+    }
 
+    async function simpanUsaha(url = '', data = {}) {
+      // Default options are marked with *
+      const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          token: readCookie('token')
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+      console.log(response.status)
+      return response.json(); // parses JSON response into native JavaScript objects
+    }
+    async function hapusUsahaTersimpan(url = '', data = {}) {
+      // Default options are marked with *
+      const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          token: readCookie('token')
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+      return response.json(); // parses JSON response into native JavaScript objects
+    }
+    async function cekUsahaTersimpan(url = '', data = {}) {
+      // Default options are marked with *
+      const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          token: readCookie('token')
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+      return response.json(); // parses JSON response into native JavaScript objects
+    }
   </script>
 
   

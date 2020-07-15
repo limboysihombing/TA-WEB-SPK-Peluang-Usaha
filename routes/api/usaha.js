@@ -3,25 +3,59 @@ var router = express.Router()
 var nanoid = require('nanoid')
 const cors = require('cors')
 const usahaFunction = require('../../config/usaha_function.js')
+const usahaTersimpanFunction = require('../../config/usaha_tersimpan_function.js')
+const jwt = require('jsonwebtoken') 
 
-// router.use(cors)
-//get all
-// router.get('/', (req, res) => {
-//   console.log('sdfkj')
-// })
-// http://localhost:3000/api/usaha?modal=10000
+router.use(cors())
+router.all('/*', verifyToken)
 
-router.get('/', (req, res) =>{
+router.get('/ambilSemuaUsaha', (req, res) =>{
   usahaFunction.ambilSemuaDataUsaha(result => {
     res.json({usaha: result})
   })
 })
+
 router.post('/simpanUsaha', (req, res) => {
-  res.send(req.body)
+  req.body.id_pengguna = req.token.id_pengguna
+  usahaTersimpanFunction.simpanUsaha(req.body, response => {
+    if(response.affectedRows > 0) {
+      res.status(200).json({status: 200, message: "success"})
+    } else {
+      res.json({message: 'failed'})
+    }
+  })
 })
 
-router.get('/*', (req, res) => {
-  res.json({msg: 'Halaman tidak ditemukan.'})
+router.post('/hapusUsahaTersimpan', (req, res) => {
+  req.body.id_pengguna = req.token.id_pengguna
+  usahaTersimpanFunction.hapusUsahaTersimpanByUser(req.body, response => {
+    if(response.affectedRows > 0) {
+      console.log(response)
+      res.status(200).json({status: 200, message: "success"})
+    } else {
+      res.json({message: 'failed'})
+    }
+  })
 })
 
+//Cek usaha apakah sudah ada di db tabel usaha_tersimpan
+router.post('/cekUsahaTersimpan', (req, res) =>{
+  req.body.id_pengguna = req.token.id_pengguna
+  usahaTersimpanFunction.cekUsahaTersimpan(req.body, result => {
+    res.json({usaha :result})
+  }) 
+})
+
+function verifyToken(req, res, next) {
+  
+  if(req.headers.token){
+    let token = jwt.verify(req.headers.token, 'shhhhh')    
+    req.token = token
+    next()
+  } else {
+    res.status(403)
+    res.json({status: 403, msg: 'Request denied!'})
+  }
+  
+}
 module.exports = router

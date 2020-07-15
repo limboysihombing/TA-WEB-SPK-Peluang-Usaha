@@ -4,7 +4,7 @@ var nanoid = require('nanoid')
 const cors = require('cors')
 const wilayahFunction = require('../../config/wilayah_function.js')
 
-// router.use(cors)
+
 //get all
 // router.get('/', (req, res) => {
 //   console.log('sdfkj')
