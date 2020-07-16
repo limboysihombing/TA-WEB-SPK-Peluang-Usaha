@@ -18,6 +18,12 @@ router.get('/', (req, res) =>{
   
 })
 
+router.get('/ambilSatuWilayah', (req, res) =>{
+  wilayahFunction.ambilWilayahByKecamatan(req.query.kelurahan, (response) => {
+    res.status(200).json(response[0])
+  })
+})
+
 router.get('/*', (req, res) => {
   res.json({msg: 'Halaman tidak ditemukan.'})
 })

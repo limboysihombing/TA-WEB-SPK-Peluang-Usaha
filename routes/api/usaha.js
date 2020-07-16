@@ -15,6 +15,18 @@ router.get('/ambilSemuaUsaha', (req, res) =>{
   })
 })
 
+router.get('/ambilUsaha', (req, res) =>{
+  usahaFunction.ambilSemuaDataUsaha(result => {
+    res.status(200).json(result)
+  })
+})
+router.get('/ambilUsahaTersimpan', (req, res) =>{
+  usahaTersimpanFunction.ambilUsahaTersimpan(req.token.id_pengguna, response => {
+    res.status(200).json(response)
+  })
+})
+
+
 router.post('/simpanUsaha', (req, res) => {
   req.body.id_pengguna = req.token.id_pengguna
   usahaTersimpanFunction.simpanUsaha(req.body, response => {
