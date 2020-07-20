@@ -22,7 +22,6 @@ router.get('/ambilUsaha', (req, res) =>{
 })
 router.get('/ambilUsahaTersimpan', (req, res) =>{
   usahaTersimpanFunction.ambilUsahaTersimpan(req.token.id_pengguna, response => {
-    console.log(response)
     res.status(200).json(response)
   })
 })

@@ -8,7 +8,10 @@
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
-      <div id="map" style="width: 100px; height: 100px; position:absolute;" class=""></div>
+      
+    </div>
+    <div class="col-12">
+    
       <div class="card mb-4 shadow">
         <img src="../img/img-3.jpg" height="300px" alt="" class="card-img-top">
         <div class="card-body position-relative">
@@ -24,31 +27,42 @@
 
           <h6>Deskripsi Usaha</h6>
           <p>{{usaha.deskripsi}}</p>
+
+          
           
           <div class="row">
+            <div class="col-12 d-none">
+              <div id="map2" style="width: 100px; height: 100px; position:absolute;" class="shadow"></div>
+              
+            </div>
             <div class="col-12">
               <h6><strong>Analisis Lokasi</strong></h6>
               <div class="jumbotron" id="target-pesaing">
                 <div class="row">
                   <div class="col-md-6 mb-3">
-                    <h6 class="mb-2">Target Pasar</h6>
+                    <h6 class="mb-2" id="labeltpasar">Target Pasar</h6>
                     <div class="row">
                       <div class="col-12">
                         <div class="list-group shadow" id="list_target_pasar">
+                        <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
                           
                         </div>
-                        <button type="button" class="mt-2 shadow btn btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
+                        <button id="target_on_map" type="button" class="mt-2 shadow btn btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-6 mb-3">
-                    <h6 class="mb-2">Daftar Pesaing</h6>
+                    <h6 class="mb-2" id="label_pesaing">Daftar Pesaing</h6>
                     <div class="row">
                       <div class="col-12">
-                        <div class="card-border-left shadow mb-2">
-                          <p class="card-title">Hari sudah malam</p>
+                        <div class="list-group shadow" id="list_pesaing">
+                          <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
                         </div>
-                        <button type="button" class="mt-2 btn shadow btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
+                        <button id="pesaing_on_map" type="button" class="mt-2 btn shadow btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
                       </div>
                     </div>
                   </div>
@@ -104,11 +118,35 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="map_on_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal_title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-0">
+        
+        <div id="map_modal" style="width: 100%; height: 300px;">
+
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <p id="footer_modal_label"></p>
+      </div>
+    </div>
+  </div>
+</div>
+  
 <script src="/bootstrap/js/popper.js"></script>
   <script src="/bootstrap/js/jquery.js"></script>
   <script src="/bootstrap/js/bootstrap.min.js"></script>
   
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeNiSKscMn5k2Ymh0FKA6Ubmt7weTjVMU&libraries=places$callback=init"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeNiSKscMn5k2Ymh0FKA6Ubmt7weTjVMU&libraries=places&callback=init"></script>
 
 
 <script>
@@ -120,25 +158,232 @@
   const lat = $('#lat_hidden').text()
   const lng = $('#lng_hidden').text()
 
-  const pos = {latitude: lat, longitude: lng}
-  let map
+  let pos 
+  let map, service
   function init() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 15,
-      center: pos
-    });
+    map = new google.maps.Map(document.getElementById('map2'), {
+        zoom: 11,
+        center: pos,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        scaleControlOptions: false,
+        streetViewControlOptions: false,
+      })
+      pos = new google.maps.LatLng(parseFloat(lat), parseFloat(lng))
+      service = new google.maps.places.PlacesService(map);
+
+      cariTargetPasarDanPesaing(service)
   }
   
 
 
-  var targetpasarHtml = 
-  `
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      afsdklj
-      <span class="badge badge-light badge-pill">±afslkjm</span>
-    </li> 
-  `
-  let dataTargetPasar = {}
+
+  async function cariTargetPasarDanPesaing(service) {
+    $('#target_on_map').hide()
+    $('#pesaing_on_map').hide()
+
+    let dataTargetPasar = []
+    let dataPesaing = []
+
+    let listTargetPasar = $('#target_hidden').text().toLocaleLowerCase().split(',')
+    
+    for(let i = 0; i < listTargetPasar.length; i++) {
+      const hasil = await cariDataPesaingAtauTarget(pos, listTargetPasar[i].trim(), service)
+      dataTargetPasar = [...dataTargetPasar, ...hasil]
+    }
+      var targetPasarHtml =  ""
+
+    dataTargetPasar.forEach(target => {
+      targetPasarHtml += 
+      `
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            ${target.name}
+            <span class="badge badge-light badge-pill">±${target.jarak}m</span>
+          </li> 
+        `
+    })
+    $('#list_target_pasar').html(targetPasarHtml)
+    $('#target_on_map').show()
+    $('#labeltpasar').html(`Daftar Target Pasar (${dataTargetPasar.length} tempat)`)
+
+    //cari pesaing
+    
+    const hasil = await cariDataPesaingAtauTarget(pos, $('#nama_hidden').text(), service)
+    dataPesaing = [...dataPesaing, ...hasil]
+    let pesaingHtml =""
+    if(dataPesaing.length > 0){
+
+    
+      for(let i=0; i<dataPesaing.length; i++) {
+        pesaingHtml += `
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              ${dataPesaing[i].name}
+              <span class="badge badge-light badge-pill">±${dataPesaing[i].jarak}m</span>
+            </li> 
+          `
+      } 
+      $('#label_pesaing').html(`Daftar Pesaing (${dataPesaing.length} usaha)`)
+      $('#pesaing_on_map').show()
+    }
+    else {
+      pesaingHtml += `
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Tidak ada pesaing dengan jenis usaha yang sama.
+            </li> 
+          `
+      $('#pesaing_on_map').hide()
+    }
+    $('#list_pesaing').html(pesaingHtml)
+
+    // click button untuk membuka map dalam modal
+
+    $('#target_on_map').click(() => {
+      $('#map_on_modal').modal('show')
+      $('#footer_modal_label').text(`Terdapat sekitar ${dataTargetPasar.length} tempat.`)
+      $('#modal_title').text('Peta Target Pasar')
+      
+      let mapModal = new google.maps.Map(document.getElementById('map_modal'), {
+        zoom: 15,
+        center: pos,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        scaleControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
+        streetViewControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+      })
+
+      let marker = new google.maps.Marker({
+        map: mapModal,
+        zoom: 1,
+        icon: '/img/small_business_38px.png',
+        position: pos,
+      })
+      new google.maps.Circle({
+        strokeColor: "#858585",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0,
+        map: mapModal,
+        center: pos,
+        radius:1000
+      });
+
+      let infowindow = new google.maps.InfoWindow({  content: "Lokasi Usaha Anda." })
+      infowindow.open(mapModal, marker);
+      marker.addListener("click", function() {
+        infowindow.open(mapModal, marker);
+      });
+
+      dataTargetPasar.forEach(target => {
+        let posisi = target.geometry.location
+        let mark= new google.maps.Marker({
+          map: mapModal,
+          zoom: 1,
+          position: posisi,
+        })
+        let infowindow = new google.maps.InfoWindow({  content: `${target.name}, Jarak ±${target.jarak}m` })
+        mark.addListener("click", function() {
+          infowindow.open(mapModal, mark);
+        });
+      })
+
+    })
+   
+    $('#pesaing_on_map').click(() => {
+      $('#map_on_modal').modal('show')
+      $('#footer_modal_label').text(`Terdapat sekitar ${dataPesaing.length} usaha.`)
+      $('#modal_title').text('Peta Pesaing')
+      
+      let mapModal = new google.maps.Map(document.getElementById('map_modal'), {
+        zoom: 15,
+        center: pos,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        scaleControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
+        streetViewControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+      })
+
+      let marker = new google.maps.Marker({
+        map: mapModal,
+        zoom: 1,
+        icon: '/img/small_business_38px.png',
+        position: pos,
+      })
+      new google.maps.Circle({
+        strokeColor: "#858585",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0,
+        map: mapModal,
+        center: pos,
+        radius:1000
+      });
+
+      let infowindow = new google.maps.InfoWindow({  content: "Lokasi Usaha Anda." })
+      infowindow.open(mapModal, marker);
+      marker.addListener("click", function() {
+        infowindow.open(mapModal, marker);
+      });
+
+      dataPesaing.forEach(pesaing => {
+        let posisi = pesaing.geometry.location
+        let mark= new google.maps.Marker({
+          map: mapModal,
+          zoom: 1,
+          position: posisi,
+        })
+        let infowindow = new google.maps.InfoWindow({  content: `${pesaing.name}, Jarak ±${pesaing.jarak}m` })
+        mark.addListener("click", function() {
+          infowindow.open(mapModal, mark);
+        });
+      })
+
+    })
+  }
+
+  function cariDataPesaingAtauTarget(pos, nama, service) {
+
+    return new Promise((resolve, reject) => {
+      service.nearbySearch({location : pos, radius : 1000, language: 'id', name: `${nama}`}, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            let data = []
+            let numTerdekat = 1001
+            results.forEach(hasil => {
+              if(getDistance(pos, hasil.geometry.location) <= 1000){
+                const jarak = getDistance(pos, hasil.geometry.location)
+                hasil['jarak'] = Math.round(jarak)
+                data.push(hasil)
+              }
+            })
+            resolve(data)
+        } else {
+          resolve([])
+        }
+      })
+    })
+  }
+
+  let rad = function(x) {
+      return x * Math.PI / 180;
+    };
+  var getDistance = function(p1, p2) {
+      var R = 6378137; // Earth’s mean radius in meter
+      var dLat = rad(p2.lat() - p1.lat());
+      var dLong = rad(p2.lng() - p1.lng());
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
+        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c;
+      return d; // returns the distance in meter
+    };
 
 
   

@@ -161,6 +161,17 @@ app.get('/masuk', (req, res) => {
   res.render('login', {layout: 'blank', title: "Masuk"})
 })
 
+app.get('/profil', (req, res) => {
+  if (req.cookies && req.cookies.token && req.cookies.token !== 'undefined') { 
+    const user = jwt.verify(req.cookies.token, 'shhhhh')
+    res.render('profil', {layout:'main', akun: user, title: 'Profil'})
+	} else {
+		// cookie tidak tersedia
+		res.render('login', {msg: 'Maaf Anda belum masuk. Silahkan masuk terlebih dahulu'})
+  }
+  
+})
+
 // Keluar akun dan hapus cookid
 app.get('/logout', (req, res) => {
   res.cookie('token', undefined)
