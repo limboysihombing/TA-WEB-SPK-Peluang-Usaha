@@ -129,7 +129,7 @@ app.get('/detail_usaha_tersimpan/:id_usaha_tersimpan', (req,res) => {
     }
     usahaTersimpanFunction.ambilSatuUsahaTersimpan(req.params.id_usaha_tersimpan, result=> {
       // res.render('detail-usaha', {title: result[0].nama_usaha, usaha: result[0], akun: user, message})
-      res.render('detail-usaha', {title: 'Detail Usaha', usaha: result[0], akun: user, message})
+      res.render('detail-usaha', {layout: "home", title: 'Detail Usaha', usaha: result[0], akun: user, message})
     })
 
 	} else {
@@ -173,6 +173,7 @@ app.use('/api/auth', require('./routes/api/auth'))
 app.use('/api/wilayah', require('./routes/api/wilayah'))
 app.use('/api', require('./routes/api/api'))
 
-app.listen(3000, ()=> {
-  console.log(`Server berjalan pada port 3000`)
+var PORT = process.env.PORT || 3000
+app.listen(PORT, ()=> {
+  console.log(`Server berjalan pada port ${PORT}`)
 })

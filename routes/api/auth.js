@@ -52,7 +52,6 @@ ambilSatuPengguna = (email) => {
       resolve(hasil)
     })
   })
-
 }
 
 module.exports = router

@@ -1,22 +1,25 @@
-{{#if message}}
-  <div class="container mt-4">
-    <div class="row">
-      <div class="col-12">
-        <div class="alert alert-success">{{message}}</div>
-      </div>
-    </div>
-  </div>
-{{/if}}
+<p id="id_usaha_hidden" class="d-none">{{usaha.id_usaha_tersimpan}}</p>
+<p id="lat_hidden" class="d-none">{{usaha.latitude}}</p>
+<p id="lng_hidden" class="d-none">{{usaha.longitude}}</p>
+<p id="target_hidden" class="d-none">{{usaha.target_pasar}}</p>
+<p id="nama_hidden" class="d-none">{{usaha.nama_usaha}}</p>
+
 
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
+      <div id="map" style="width: 100px; height: 100px; position:absolute;" class=""></div>
       <div class="card mb-4 shadow">
         <img src="../img/img-3.jpg" height="300px" alt="" class="card-img-top">
         <div class="card-body position-relative">
-          <a href="/simpan_usaha?idu={{usaha.id_usaha}}&idw=1245" type="button" id="btn-save" data-toggle="tooltip" data-placement="bottom" title="Simpan" class="btn btn-sm btn-info shadow"><i class="fas fa-save"></i></a>
+          <a href="/hapus_usaha_tersimpan/{{usaha.id_usaha_tersimpan}}" type="button" id="btn_save" data-toggle="tooltip" data-placement="bottom" title="Hapus usaha ini" class="btn btn-sm btn-warning shadow">
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+          </svg>
+          </a>
           
-          <h5 class="card-title"><strong>Detail Usaha {{usaha.nama_usaha}}</strong></h5>
+          <h5 class="card-title"><strong>Usaha {{usaha.nama_usaha}}</strong></h5>
           <h6>Modal Usaha: Rp.{{usaha.modal}}</h6>
 
           <h6>Deskripsi Usaha</h6>
@@ -31,8 +34,8 @@
                     <h6 class="mb-2">Target Pasar</h6>
                     <div class="row">
                       <div class="col-12">
-                        <div class="card-border-left shadow mb-2">
-                          <p class="card-title">Hari sudah malam</p>
+                        <div class="list-group shadow" id="list_target_pasar">
+                          
                         </div>
                         <button type="button" class="mt-2 shadow btn btn-info btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat dalam Peta</button>
                       </div>
@@ -101,10 +104,42 @@
     </div>
   </div>
 </div>
-
 <script src="/bootstrap/js/popper.js"></script>
-<script src="/bootstrap/js/jquery.js"></script>
-<script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/bootstrap/js/jquery.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeNiSKscMn5k2Ymh0FKA6Ubmt7weTjVMU&libraries=places$callback=init"></script>
 
-<!-- content -->
 
+<script>
+  $('#nav-scroll').removeClass('container-fluid').addClass('container')
+  $('#navigasi').addClass('bg-white').removeClass('fixed-top').addClass('sticky-top')
+
+  let idUsahaTersimpan = document.getElementById('id_usaha_hidden').innerText
+  
+  const lat = $('#lat_hidden').text()
+  const lng = $('#lng_hidden').text()
+
+  const pos = {latitude: lat, longitude: lng}
+  let map
+  function init() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 15,
+      center: pos
+    });
+  }
+  
+
+
+  var targetpasarHtml = 
+  `
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      afsdklj
+      <span class="badge badge-light badge-pill">±afslkjm</span>
+    </li> 
+  `
+  let dataTargetPasar = {}
+
+
+  
+</script>

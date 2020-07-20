@@ -22,6 +22,7 @@ router.get('/ambilUsaha', (req, res) =>{
 })
 router.get('/ambilUsahaTersimpan', (req, res) =>{
   usahaTersimpanFunction.ambilUsahaTersimpan(req.token.id_pengguna, response => {
+    console.log(response)
     res.status(200).json(response)
   })
 })
@@ -33,7 +34,7 @@ router.post('/simpanUsaha', (req, res) => {
     if(response.affectedRows > 0) {
       res.status(200).json({status: 200, message: "success"})
     } else {
-      res.json({message: 'failed'})
+      res.status(500).json({message: 'failed'})
     }
   })
 })
@@ -50,6 +51,17 @@ router.post('/hapusUsahaTersimpan', (req, res) => {
   })
 })
 
+router.delete('/hapusUsahaTersimpanById/:id_usaha', (req, res) => {
+  req.body.id_pengguna = req.token.id_pengguna
+  usahaTersimpanFunction.hapusUsahaTersimpan(req.params.id_usaha, response => {
+    if(response.affectedRows > 0) {
+      res.status(200).end()
+    } else {
+      res.status(500).json({message: 'failed'})
+    }
+  })
+})
+
 //Cek usaha apakah sudah ada di db tabel usaha_tersimpan
 router.post('/cekUsahaTersimpan', (req, res) =>{
   req.body.id_pengguna = req.token.id_pengguna
@@ -57,6 +69,8 @@ router.post('/cekUsahaTersimpan', (req, res) =>{
     res.json({usaha :result})
   }) 
 })
+
+
 
 function verifyToken(req, res, next) {
   
